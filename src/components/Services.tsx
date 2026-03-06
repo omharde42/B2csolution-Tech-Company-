@@ -21,11 +21,6 @@ interface Service {
 const services: Service[] = [
   // Digital Services
   { id: 'web-dev', name: 'Web Development', price: 4999, icon: Globe, desc: 'Custom responsive websites built with modern tech stacks.', category: 'Digital' },
-  { id: 'app-dev', name: 'App Development', price: 7999, icon: Smartphone, desc: 'Cross-platform mobile apps for iOS and Android.', category: 'Digital' },
-  { id: 'design', name: 'Graphic Design', price: 1999, icon: Palette, desc: 'Logos, banners, social media creatives and brand kits.', category: 'Digital' },
-  { id: 'seo', name: 'SEO Optimization', price: 2999, icon: Search, desc: 'Boost your search rankings and organic traffic.', category: 'Digital' },
-  { id: 'smm', name: 'Social Media Marketing', price: 3499, icon: Share2, desc: 'Grow your brand with targeted social campaigns.', category: 'Digital' },
-  { id: 'video', name: 'Video Editing', price: 2499, icon: Video, desc: 'Professional editing for YouTube, reels and ads.', category: 'Digital' },
   { id: 'ai-website', name: 'AI Website Builder', price: 2540, icon: Bot, desc: 'AI-powered website creation starting from ₹2540.', category: 'Digital' },
   // Document Services
   { id: 'typewriting', name: 'Typewriting', price: 300, icon: FileText, desc: 'Professional typewriting services.', category: 'Documents', tiers: [{ label: '10 pages', price: 300 }, { label: '20 pages', price: 600 }] },
