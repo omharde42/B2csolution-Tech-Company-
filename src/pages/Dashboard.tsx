@@ -59,7 +59,7 @@ const Dashboard = () => {
                   ))}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="font-display font-bold text-accent">₹{order.total.toLocaleString()}</span>
+                  <span className="font-display font-bold text-[hsl(var(--price))]">₹{order.total.toLocaleString()}</span>
                   <button
                     onClick={() => navigate(`/order-tracking/${order.id}`)}
                     className="rounded-lg border border-border px-4 py-2 text-xs font-medium text-foreground hover:bg-secondary"

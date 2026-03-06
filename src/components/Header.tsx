@@ -20,9 +20,10 @@ const Header = () => {
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden items-center gap-6 md:flex">
           <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Home</Link>
+          <Link to="/services" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Services</Link>
+          <Link to="/reviews" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Reviews</Link>
           <Link to="/checkout" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Checkout</Link>
           {user && (
             <Link to="/dashboard" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
@@ -61,6 +62,8 @@ const Header = () => {
         <div className="border-t border-border bg-background px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-3">
             <Link to="/" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
+            <Link to="/services" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Services</Link>
+            <Link to="/reviews" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Reviews</Link>
             <Link to="/checkout" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Checkout</Link>
             {user && <Link to="/dashboard" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Dashboard</Link>}
           </nav>
