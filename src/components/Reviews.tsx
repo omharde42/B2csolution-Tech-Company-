@@ -3,7 +3,6 @@ import { Star } from 'lucide-react';
 
 const reviews = [
   { name: 'Arjun P.', rating: 5, text: 'Incredible service! B2CSOLUTION delivered my website ahead of schedule with outstanding quality.', service: 'Web Development' },
-  { name: 'Sneha M.', rating: 5, text: 'The SEO optimization doubled our traffic in 2 months. Highly recommend their digital marketing team!', service: 'SEO' },
   { name: 'Rahul K.', rating: 4, text: 'Great graphic design work. The logo and branding they created perfectly represents our business.', service: 'Graphic Design' },
   { name: 'Priya S.', rating: 5, text: 'Professional video editing for our YouTube channel. Quick turnaround and amazing results!', service: 'Video Editing' },
   { name: 'Vikram D.', rating: 5, text: 'The app they built works flawlessly. Communication was excellent throughout the project.', service: 'App Development' },
