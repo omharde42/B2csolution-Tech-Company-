@@ -70,13 +70,13 @@ const Checkout = () => {
                   <span className="w-6 text-center text-sm">{item.quantity}</span>
                   <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="rounded bg-secondary p-1"><Plus size={14} /></button>
                 </div>
-                <p className="font-display font-bold text-accent w-20 text-right">₹{item.price * item.quantity}</p>
+                <p className="font-display font-bold text-[hsl(var(--price))] w-20 text-right">₹{item.price * item.quantity}</p>
                 <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-accent"><X size={16} /></button>
               </div>
             ))}
             <div className="flex justify-between border-t border-border pt-4">
               <span className="font-display font-bold text-lg">Total</span>
-              <span className="font-display font-bold text-lg text-accent">₹{total.toLocaleString()}</span>
+              <span className="font-display font-bold text-lg text-[hsl(var(--price))]">₹{total.toLocaleString()}</span>
             </div>
           </div>
 

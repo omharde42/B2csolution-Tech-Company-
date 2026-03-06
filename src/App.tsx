@@ -15,6 +15,8 @@ import Index from "./pages/Index";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
 import OrderTracking from "./pages/OrderTracking";
+import ServicesPage from "./pages/ServicesPage";
+import ReviewsPage from "./pages/ReviewsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +35,8 @@ const App = () => (
             <main className="min-h-screen">
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/services" element={<ServicesPage />} />
+                <Route path="/reviews" element={<ReviewsPage />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
