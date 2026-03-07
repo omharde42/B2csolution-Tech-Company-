@@ -5,13 +5,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 const botResponses: Record<string, string> = {
   'hello': 'Hi there! 👋 Welcome to B2CSOLUTION. How can I help you today?',
   'hi': 'Hey! 👋 How can I assist you?',
-  'services': 'We offer Web Development, App Development, Graphic Design, SEO, Social Media Marketing, and Video Editing. Browse our homepage to add services to your cart!',
-  'price': 'Our prices vary by service. Check our homepage for detailed pricing on each service.',
+  'hey': 'Hello! 👋 What can I do for you?',
+  'services': 'We offer Web Development, AI Website Builder, Typewriting, PPT Making, PDF to Excel, Windows/Linux Installation, Virus Removal, Antivirus Setup, Data Recovery, Laptop Repair, Printer Setup, WiFi Setup, Software Installation, Email Setup, and PC Optimization. Check our Services page!',
+  'price': 'Our prices vary by service — from ₹45 for PDF to Excel to ₹4999 for Web Development. Visit our Services page for detailed pricing!',
+  'pricing': 'Check out our Services page for complete pricing. Prices range from ₹45 to ₹4999 depending on the service.',
   'payment': 'We accept UPI payments. You can pay via QR code during checkout using omharde300@oksbi or 9882303030@fam.',
-  'contact': 'You can reach Om Harde on WhatsApp at 9882303030, Instagram @itzomharde_6, or Discord om041817.',
-  'order': 'You can track your orders from the Dashboard. Click on your profile icon to access it.',
-  'track': 'Go to Dashboard → Order Tracking to see the status of your orders.',
-  'help': 'I can help with: services, pricing, payment, contact info, and order tracking. Just ask!',
+  'upi': 'Our UPI IDs are omharde300@oksbi and 9882303030@fam. You\'ll see a QR code at checkout.',
+  'contact': 'You can reach Om Harde on WhatsApp at 9882303030, Instagram @itzomharde_6, or Discord om041817. Or use our Contact page!',
+  'order': 'You can track your orders from the Dashboard. Sign in first, then go to Dashboard.',
+  'track': 'Go to Dashboard to see all your order history and tracking info.',
+  'help': 'I can help with: services, pricing, payment methods, contact info, order tracking, and more. Just ask!',
+  'refund': 'For refund requests, please contact us directly on WhatsApp at 9882303030.',
+  'delivery': 'Delivery timelines depend on the service. Most digital services are delivered within 2-5 business days.',
+  'time': 'Our working hours are Mon-Fri 9AM-7PM, Saturday 10AM-5PM. Sunday is closed.',
+  'hours': 'We\'re open Mon-Fri 9AM-7PM, Saturday 10AM-5PM. Closed on Sunday.',
+  'website': 'We build custom websites starting from ₹4999. Our AI Website Builder starts from ₹2540!',
+  'web': 'Web Development costs ₹4999 for a custom responsive website. AI Website Builder is ₹2540.',
+  'virus': 'Virus Removal costs ₹300. We do a complete malware and virus cleanup on your device.',
+  'laptop': 'Laptop Repair starts at ₹600. We handle hardware diagnosis and repair.',
+  'wifi': 'WiFi Setup costs ₹250. We configure your router and network.',
+  'windows': 'Windows Installation costs ₹500. Fresh Windows 10/11 with drivers.',
+  'linux': 'Linux Installation costs ₹400. Ubuntu/Fedora setup.',
+  'thanks': 'You\'re welcome! Feel free to ask if you need anything else. 😊',
+  'thank': 'Happy to help! Let me know if you have more questions. 😊',
+  'bye': 'Goodbye! 👋 Have a great day!',
+  'how are you': 'I\'m doing great! Thanks for asking. How can I help you today?',
 };
 
 const getResponse = (msg: string): string => {
@@ -19,7 +37,7 @@ const getResponse = (msg: string): string => {
   for (const [key, val] of Object.entries(botResponses)) {
     if (lower.includes(key)) return val;
   }
-  return "Thanks for your message! For detailed help, please contact us on WhatsApp at 9882303030. Type 'help' to see what I can assist with.";
+  return "I'm not sure about that one. Try asking about our services, pricing, payment, or contact info. Type 'help' to see what I can help with!";
 };
 
 interface Message {
@@ -33,6 +51,8 @@ const ChatBot = () => {
     { text: "Hi! 👋 I'm B2C Bot. How can I help you? Type 'help' for options.", isBot: true }
   ]);
   const [input, setInput] = useState('');
+  const [questionCount, setQuestionCount] = useState(0);
+  const [redirected, setRedirected] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,14 +64,30 @@ const ChatBot = () => {
     const userMsg = input.trim();
     setMessages(prev => [...prev, { text: userMsg, isBot: false }]);
     setInput('');
-    setTimeout(() => {
-      setMessages(prev => [...prev, { text: getResponse(userMsg), isBot: true }]);
-    }, 500);
+
+    const newCount = questionCount + 1;
+    setQuestionCount(newCount);
+
+    if (newCount >= 10 && !redirected) {
+      setRedirected(true);
+      setTimeout(() => {
+        setMessages(prev => [...prev, { 
+          text: "You've asked quite a few questions! 🤔 For more detailed help, please connect with our admin directly. Redirecting you to WhatsApp now...", 
+          isBot: true 
+        }]);
+        setTimeout(() => {
+          window.open('https://wa.me/919882303030?text=' + encodeURIComponent("Hi, I have some questions about B2CSOLUTION services."), '_blank');
+        }, 2000);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setMessages(prev => [...prev, { text: getResponse(userMsg), isBot: true }]);
+      }, 500);
+    }
   };
 
   return (
     <>
-      {/* Chat toggle - positioned above WhatsApp button */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-24 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110 glow-primary"

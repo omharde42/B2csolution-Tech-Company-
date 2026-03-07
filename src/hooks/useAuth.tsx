@@ -1,14 +1,20 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import type { User as SupaUser } from '@supabase/supabase-js';
 
-interface User {
+interface UserProfile {
+  id: string;
   name: string;
   email: string;
 }
 
 interface AuthContextType {
-  user: User | null;
-  login: (email: string, name: string) => void;
-  logout: () => void;
+  user: UserProfile | null;
+  loading: boolean;
+  isAdmin: boolean;
+  login: (email: string, password: string) => Promise<{ error?: string }>;
+  signup: (email: string, password: string, name: string) => Promise<{ error?: string }>;
+  logout: () => Promise<void>;
   showAuth: boolean;
   setShowAuth: (v: boolean) => void;
 }
@@ -21,29 +27,81 @@ export const useAuth = () => {
   return ctx;
 };
 
-const loadUser = (): User | null => {
-  try { return JSON.parse(localStorage.getItem('b2c_user') || 'null'); }
-  catch { return null; }
-};
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(loadUser);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
 
-  const login = (email: string, name: string) => {
-    const u = { email, name };
-    setUser(u);
-    localStorage.setItem('b2c_user', JSON.stringify(u));
-    setShowAuth(false);
+  const fetchProfile = async (supaUser: SupaUser) => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', supaUser.id)
+      .single();
+
+    if (profile) {
+      setUser({ id: supaUser.id, name: profile.name, email: profile.email });
+    } else {
+      setUser({ id: supaUser.id, name: supaUser.email?.split('@')[0] || '', email: supaUser.email || '' });
+    }
+
+    // Check admin role
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', supaUser.id);
+
+    setIsAdmin(roles?.some((r: any) => r.role === 'admin') || false);
   };
 
-  const logout = () => {
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        await fetchProfile(session.user);
+      } else {
+        setUser(null);
+        setIsAdmin(false);
+      }
+      setLoading(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        fetchProfile(session.user);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error.message };
+    setShowAuth(false);
+    return {};
+  };
+
+  const signup = async (email: string, password: string, name: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } }
+    });
+    if (error) return { error: error.message };
+    setShowAuth(false);
+    return {};
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem('b2c_user');
+    setIsAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, showAuth, setShowAuth }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, login, signup, logout, showAuth, setShowAuth }}>
       {children}
     </AuthContext.Provider>
   );
