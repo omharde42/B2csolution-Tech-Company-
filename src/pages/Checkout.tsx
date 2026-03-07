@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
-import { X, Minus, Plus, CheckCircle } from 'lucide-react';
+import { X, Minus, Plus, CheckCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const upiIds = [
@@ -11,19 +12,25 @@ const upiIds = [
 ];
 
 const Checkout = () => {
-  const { items, removeItem, updateQuantity, total, placeOrder, clearCart } = useCart();
+  const { items, removeItem, updateQuantity, total, placeOrder } = useCart();
+  const { user, setShowAuth } = useAuth();
   const [selectedUpi, setSelectedUpi] = useState(upiIds[0].id);
   const [orderPlaced, setOrderPlaced] = useState<string | null>(null);
+  const [placing, setPlacing] = useState(false);
   const navigate = useNavigate();
 
   const upiUrl = `upi://pay?pa=${selectedUpi}&pn=B2CSOLUTION&am=${total}&cu=INR&tn=B2CSOLUTION%20Order`;
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (items.length === 0) return;
-    const order = placeOrder();
+    if (!user) { setShowAuth(true); return; }
+    
+    setPlacing(true);
+    const order = await placeOrder();
     setOrderPlaced(order.id);
+    setPlacing(false);
 
-    // Build WhatsApp message
+    // Build WhatsApp message and redirect
     const lines = items.map(i => `• ${i.name} x${i.quantity} — ₹${i.price * i.quantity}`);
     const msg = `🛒 *New Order from B2CSOLUTION*\n\nOrder ID: ${order.id}\n\n${lines.join('\n')}\n\n*Total: ₹${order.total}*\n\nPayment UPI: ${selectedUpi}`;
     window.open(`https://wa.me/919882303030?text=${encodeURIComponent(msg)}`, '_blank');
@@ -33,12 +40,12 @@ const Checkout = () => {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="inline-block">
-          <CheckCircle size={64} className="text-[hsl(142,70%,45%)] mx-auto mb-4" />
+          <CheckCircle size={64} className="text-[hsl(var(--price))] mx-auto mb-4" />
         </motion.div>
         <h1 className="font-display text-2xl font-bold mb-2">Order Placed!</h1>
         <p className="text-muted-foreground mb-2">Order ID: <span className="font-mono text-accent">{orderPlaced}</span></p>
-        <p className="text-sm text-muted-foreground mb-6">A WhatsApp message has been sent with your order details.</p>
-        <div className="flex gap-3 justify-center">
+        <p className="text-sm text-muted-foreground mb-6">Your order details have been sent via WhatsApp.</p>
+        <div className="flex gap-3 justify-center flex-wrap">
           <button onClick={() => navigate('/')} className="rounded-lg bg-primary px-6 py-3 text-sm font-bold text-primary-foreground">Back to Home</button>
           <button onClick={() => navigate('/dashboard')} className="rounded-lg border border-border px-6 py-3 text-sm font-bold text-foreground hover:bg-secondary">View Dashboard</button>
         </div>
@@ -56,13 +63,12 @@ const Checkout = () => {
         </div>
       ) : (
         <div className="grid gap-10 lg:grid-cols-2">
-          {/* Cart items */}
           <div className="space-y-4">
             <h2 className="font-display text-lg font-semibold mb-4">Order Summary</h2>
             {items.map(item => (
               <div key={item.id} className="flex items-center gap-3 rounded-lg border border-border bg-card p-4">
-                <div className="flex-1">
-                  <p className="font-semibold text-sm">{item.name}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm truncate">{item.name}</p>
                   <p className="text-xs text-muted-foreground">₹{item.price} each</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -80,10 +86,9 @@ const Checkout = () => {
             </div>
           </div>
 
-          {/* Payment */}
           <div className="rounded-xl border border-border bg-card p-6">
             <h2 className="font-display text-lg font-semibold mb-4">UPI Payment</h2>
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-6 flex-wrap">
               {upiIds.map(u => (
                 <button
                   key={u.id}
@@ -102,11 +107,16 @@ const Checkout = () => {
             <p className="text-center text-xs text-muted-foreground mb-6">
               Scan QR code to pay ₹{total.toLocaleString()} to <span className="text-accent">{selectedUpi}</span>
             </p>
+            {!user && (
+              <p className="text-center text-xs text-accent mb-4">Please sign in before placing your order.</p>
+            )}
             <button
               onClick={handlePlaceOrder}
-              className="w-full rounded-lg bg-accent py-3 font-display text-sm font-bold text-accent-foreground transition-transform hover:scale-[1.02] glow-accent"
+              disabled={placing}
+              className="w-full rounded-lg bg-accent py-3 font-display text-sm font-bold text-accent-foreground transition-transform hover:scale-[1.02] glow-accent disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              Place Order & Send via WhatsApp
+              {placing && <Loader2 size={16} className="animate-spin" />}
+              {user ? 'Place Order & Send via WhatsApp' : 'Sign In to Place Order'}
             </button>
           </div>
         </div>

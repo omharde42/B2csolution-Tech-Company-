@@ -1,12 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Shield } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
 import { useState } from 'react';
 
 const Header = () => {
   const { items, setIsOpen } = useCart();
-  const { user, setShowAuth, logout } = useAuth();
+  const { user, isAdmin, setShowAuth, logout } = useAuth();
   const [mobileMenu, setMobileMenu] = useState(false);
   const navigate = useNavigate();
   const itemCount = items.reduce((s, i) => s + i.quantity, 0);
@@ -24,9 +24,15 @@ const Header = () => {
           <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Home</Link>
           <Link to="/services" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Services</Link>
           <Link to="/reviews" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Reviews</Link>
+          <Link to="/contact" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Contact</Link>
           <Link to="/checkout" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Checkout</Link>
           {user && (
             <Link to="/dashboard" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
+          )}
+          {isAdmin && (
+            <Link to="/admin" className="text-sm font-medium text-accent transition-colors hover:text-accent/80 flex items-center gap-1">
+              <Shield size={14} /> Admin
+            </Link>
           )}
         </nav>
 
@@ -57,15 +63,16 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileMenu && (
         <div className="border-t border-border bg-background px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-3">
             <Link to="/" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
             <Link to="/services" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Services</Link>
             <Link to="/reviews" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Reviews</Link>
+            <Link to="/contact" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Contact</Link>
             <Link to="/checkout" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Checkout</Link>
             {user && <Link to="/dashboard" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Dashboard</Link>}
+            {isAdmin && <Link to="/admin" onClick={() => setMobileMenu(false)} className="text-sm text-accent hover:text-accent/80 flex items-center gap-1"><Shield size={14} /> Admin</Link>}
           </nav>
         </div>
       )}

@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface CartItem {
   id: string;
@@ -14,7 +16,6 @@ export interface Order {
   total: number;
   status: 'pending' | 'confirmed' | 'in-progress' | 'completed';
   date: string;
-  trackingSteps: { label: string; done: boolean; date?: string }[];
 }
 
 interface CartContextType {
@@ -25,9 +26,11 @@ interface CartContextType {
   clearCart: () => void;
   total: number;
   orders: Order[];
-  placeOrder: () => Order;
+  placeOrder: () => Promise<Order>;
+  reorder: (order: Order) => void;
   isOpen: boolean;
   setIsOpen: (v: boolean) => void;
+  loadingOrders: boolean;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -38,16 +41,38 @@ export const useCart = () => {
   return ctx;
 };
 
-const loadOrders = (): Order[] => {
-  try {
-    return JSON.parse(localStorage.getItem('b2c_orders') || '[]');
-  } catch { return []; }
-};
-
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
-  const [orders, setOrders] = useState<Order[]>(loadOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  // Fetch orders from DB when user logs in
+  useEffect(() => {
+    if (user) {
+      setLoadingOrders(true);
+      supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .then(({ data }) => {
+          if (data) {
+            setOrders(data.map((o: any) => ({
+              id: o.order_id,
+              items: o.items as CartItem[],
+              total: Number(o.total),
+              status: o.status as Order['status'],
+              date: o.created_at,
+            })));
+          }
+          setLoadingOrders(false);
+        });
+    } else {
+      setOrders([]);
+    }
+  }, [user]);
 
   const addItem = useCallback((item: Omit<CartItem, 'quantity'>) => {
     setItems(prev => {
@@ -71,29 +96,39 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-  const placeOrder = useCallback(() => {
+  const placeOrder = useCallback(async () => {
+    const orderId = `B2C-${Date.now().toString(36).toUpperCase()}`;
     const order: Order = {
-      id: `B2C-${Date.now().toString(36).toUpperCase()}`,
+      id: orderId,
       items: [...items],
       total,
       status: 'pending',
       date: new Date().toISOString(),
-      trackingSteps: [
-        { label: 'Order Placed', done: true, date: new Date().toISOString() },
-        { label: 'Confirmed', done: false },
-        { label: 'In Progress', done: false },
-        { label: 'Completed', done: false },
-      ],
     };
-    const updated = [order, ...orders];
-    setOrders(updated);
-    localStorage.setItem('b2c_orders', JSON.stringify(updated));
+
+    // Save to DB if logged in
+    if (user) {
+      await supabase.from('orders').insert({
+        order_id: orderId,
+        user_id: user.id,
+        items: items as any,
+        total,
+        status: 'pending',
+      });
+    }
+
+    setOrders(prev => [order, ...prev]);
     setItems([]);
     return order;
-  }, [items, total, orders]);
+  }, [items, total, user]);
+
+  const reorder = useCallback((order: Order) => {
+    setItems(order.items.map(i => ({ ...i })));
+    setIsOpen(true);
+  }, []);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, orders, placeOrder, isOpen, setIsOpen }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, orders, placeOrder, reorder, isOpen, setIsOpen, loadingOrders }}>
       {children}
     </CartContext.Provider>
   );

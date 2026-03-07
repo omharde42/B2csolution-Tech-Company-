@@ -1,27 +1,15 @@
-import { Instagram, Github, MessageCircle, Phone, MapPin, Clock } from 'lucide-react';
+import { Instagram, Github, MessageCircle, Phone, Clock } from 'lucide-react';
 
 const Footer = () => {
   return (
     <footer className="border-t border-border bg-card mt-20">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-10 md:grid-cols-4">
+        <div className="grid gap-10 md:grid-cols-3">
           {/* Brand */}
           <div>
             <h3 className="font-display text-lg font-bold text-gradient-brand mb-3">B2CSOLUTION</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Your trusted partner for digital services and solutions. Quality work, delivered on time.
-            </p>
-          </div>
-
-          {/* Address */}
-          <div>
-            <h4 className="font-display text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-              <MapPin size={16} className="text-accent" /> Address
-            </h4>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              B2CSOLUTION HQ<br />
-              123 Business Park, Suite 456<br />
-              Tech City, IN 411001
             </p>
           </div>
 
