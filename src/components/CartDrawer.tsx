@@ -1,9 +1,11 @@
 import { useCart } from '@/hooks/useCart';
 import { X, Minus, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, total, isOpen, setIsOpen } = useCart();
+  const navigate = useNavigate();
 
   return (
     <AnimatePresence>
@@ -55,12 +57,12 @@ const CartDrawer = () => {
                   <span className="font-semibold">Total</span>
                   <span className="font-display font-bold text-accent">₹{total}</span>
                 </div>
-                <a
-                  href="/checkout"
+                <button
+                  onClick={() => { setIsOpen(false); navigate('/checkout'); }}
                   className="block w-full rounded-lg bg-accent py-3 text-center text-sm font-bold text-accent-foreground transition-colors hover:bg-accent/80"
                 >
                   Proceed to Checkout
-                </a>
+                </button>
               </div>
             )}
           </motion.div>
