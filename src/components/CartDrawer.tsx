@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, total, isOpen, setIsOpen } = useCart();
+  const navigate = useNavigate();
 
   return (
     <AnimatePresence>
