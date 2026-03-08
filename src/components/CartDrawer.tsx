@@ -1,6 +1,7 @@
 import { useCart } from '@/hooks/useCart';
 import { X, Minus, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, total, isOpen, setIsOpen } = useCart();
