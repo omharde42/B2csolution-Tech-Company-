@@ -33,7 +33,7 @@ const Hero = () => (
         <a href="#services" className="rounded-lg bg-accent px-8 py-3 font-display text-sm font-bold text-accent-foreground transition-transform hover:scale-105 glow-accent">
           Explore Services
         </a>
-        <a href="https://wa.me/919882303030" target="_blank" rel="noopener noreferrer"
+        <a href="https://web.whatsapp.com/send?phone=919882303030" target="_blank" rel="noopener noreferrer"
           className="rounded-lg border border-border px-8 py-3 font-display text-sm font-bold text-foreground transition-colors hover:bg-secondary">
           Contact Us
         </a>

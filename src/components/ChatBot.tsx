@@ -76,7 +76,7 @@ const ChatBot = () => {
           isBot: true 
         }]);
         setTimeout(() => {
-          window.open('https://wa.me/919882303030?text=' + encodeURIComponent("Hi, I have some questions about B2CSOLUTION services."), '_blank');
+          window.open('https://web.whatsapp.com/send?phone=919882303030&text=' + encodeURIComponent("Hi, I have some questions about B2CSOLUTION services."), '_blank');
         }, 2000);
       }, 500);
     } else {

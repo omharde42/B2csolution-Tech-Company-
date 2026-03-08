@@ -33,7 +33,7 @@ const Checkout = () => {
     // Build WhatsApp message and redirect
     const lines = items.map(i => `• ${i.name} x${i.quantity} — ₹${i.price * i.quantity}`);
     const msg = `🛒 *New Order from B2CSOLUTION*\n\nOrder ID: ${order.id}\n\n${lines.join('\n')}\n\n*Total: ₹${order.total}*\n\nPayment UPI: ${selectedUpi}`;
-    window.open(`https://wa.me/919882303030?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://web.whatsapp.com/send?phone=919882303030&text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   if (orderPlaced) {
