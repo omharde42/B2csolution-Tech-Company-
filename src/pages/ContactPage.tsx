@@ -38,7 +38,7 @@ const ContactPage = () => {
         <h1 className="font-display text-2xl font-bold mb-2">Inquiry Submitted!</h1>
         <p className="text-muted-foreground mb-6">We'll get back to you shortly. You can also reach us on WhatsApp.</p>
         <a
-          href="https://wa.me/919882303030"
+           href="https://web.whatsapp.com/send?phone=919882303030"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg bg-[hsl(142,70%,45%)] px-6 py-3 text-sm font-bold text-[hsl(0,0%,100%)]"
