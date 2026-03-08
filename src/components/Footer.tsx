@@ -40,7 +40,7 @@ const Footer = () => {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MessageCircle size={16} /> Discord: om041817
               </div>
-              <a href="https://wa.me/919882303030" target="_blank" rel="noopener noreferrer"
+              <a href="https://web.whatsapp.com/send?phone=919882303030" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-accent">
                 <Phone size={16} /> Om Harde – 9882303030
               </a>
