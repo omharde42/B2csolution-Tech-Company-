@@ -38,7 +38,7 @@ const ContactPage = () => {
         <h1 className="font-display text-2xl font-bold mb-2">Inquiry Submitted!</h1>
         <p className="text-muted-foreground mb-6">We'll get back to you shortly. You can also reach us on WhatsApp.</p>
         <a
-           href="https://web.whatsapp.com/send?phone=919882303030"
+           href="https://api.whatsapp.com/send?phone=919882303030&text=Hi%20B2CSOLUTION!%20I%20just%20submitted%20a%20contact%20inquiry.%20Looking%20forward%20to%20your%20response!"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg bg-[hsl(142,70%,45%)] px-6 py-3 text-sm font-bold text-[hsl(0,0%,100%)]"
@@ -137,7 +137,7 @@ const ContactPage = () => {
         </form>
 
         <div className="mt-8 pt-6 border-t border-border grid gap-4 md:grid-cols-3">
-          <a href="https://web.whatsapp.com/send?phone=919882303030" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors">
+          <a href="https://api.whatsapp.com/send?phone=919882303030&text=Hi%20B2CSOLUTION!%20I%27d%20like%20to%20get%20in%20touch." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors">
             <Phone size={18} className="text-accent" /> 9882303030
           </a>
           <a href="mailto:omharde300@gmail.com" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors">
