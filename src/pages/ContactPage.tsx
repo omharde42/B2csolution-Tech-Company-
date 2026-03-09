@@ -137,7 +137,7 @@ const ContactPage = () => {
         </form>
 
         <div className="mt-8 pt-6 border-t border-border grid gap-4 md:grid-cols-3">
-          <a href="https://web.whatsapp.com/send?phone=919882303030" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors">
+          <a href="https://api.whatsapp.com/send?phone=919882303030&text=Hi%20B2CSOLUTION!%20I%27d%20like%20to%20get%20in%20touch." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors">
             <Phone size={18} className="text-accent" /> 9882303030
           </a>
           <a href="mailto:omharde300@gmail.com" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors">
