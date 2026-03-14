@@ -24,8 +24,8 @@ const Header = () => {
           <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Home</Link>
           <Link to="/services" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Services</Link>
           <Link to="/reviews" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Reviews</Link>
+          <Link to="/team" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Team</Link>
           <Link to="/contact" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Contact</Link>
-          <Link to="/checkout" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Checkout</Link>
           {user && (
             <Link to="/dashboard" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
           )}
