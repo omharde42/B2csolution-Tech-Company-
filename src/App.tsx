@@ -12,6 +12,7 @@ import ChatBot from "@/components/ChatBot";
 import CartDrawer from "@/components/CartDrawer";
 import AuthModal from "@/components/AuthModal";
 import PageTracker from "@/components/PageTracker";
+import CollaborationBanner from "@/components/CollaborationBanner";
 import Index from "./pages/Index";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
@@ -19,6 +20,7 @@ import OrderTracking from "./pages/OrderTracking";
 import ServicesPage from "./pages/ServicesPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import ContactPage from "./pages/ContactPage";
+import TeamPage from "./pages/TeamPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -42,6 +44,7 @@ const App = () => (
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/reviews" element={<ReviewsPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/team" element={<TeamPage />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
@@ -49,6 +52,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
+            <CollaborationBanner />
             <Footer />
             <WhatsAppButton />
             <ChatBot />
