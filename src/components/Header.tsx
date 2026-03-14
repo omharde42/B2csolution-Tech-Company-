@@ -69,8 +69,8 @@ const Header = () => {
             <Link to="/" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
             <Link to="/services" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Services</Link>
             <Link to="/reviews" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Reviews</Link>
+            <Link to="/team" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Team</Link>
             <Link to="/contact" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Contact</Link>
-            <Link to="/checkout" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Checkout</Link>
             {user && <Link to="/dashboard" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Dashboard</Link>}
             {isAdmin && <Link to="/admin" onClick={() => setMobileMenu(false)} className="text-sm text-accent hover:text-accent/80 flex items-center gap-1"><Shield size={14} /> Admin</Link>}
           </nav>
