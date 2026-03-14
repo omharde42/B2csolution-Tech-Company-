@@ -23,7 +23,9 @@ const team = [
     bio: 'Key team member handling product management on Shopify and Printify platforms. Raj brings e-commerce expertise and operational efficiency to B2CSOLUTION.',
     highlight: 'Soon handling the social media strategy and operations for B2CSOLUTION.',
     highlightIcon: Rocket,
-    socials: [],
+    socials: [
+      { icon: Instagram, url: 'https://www.instagram.com/raj_bon09/', label: '@raj_bon09' },
+    ],
   },
 ];
 
