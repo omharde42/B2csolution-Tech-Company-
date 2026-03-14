@@ -4,7 +4,7 @@ import { MessageSquare, Search, Wrench, CheckCircle } from 'lucide-react';
 const steps = [
   { icon: MessageSquare, step: '01', title: 'Tell Us Your Need', desc: 'Reach out via WhatsApp, contact form, or call. Describe what you need.' },
   { icon: Search, step: '02', title: 'We Assess & Plan', desc: 'Our team evaluates your requirements and provides a clear quote.' },
-  { icon: Wrench, step: '03', title: 'We Get It Done', desc: 'Expert execution — whether it's a website, repair, or document service.' },
+  { icon: Wrench, step: '03', title: 'We Get It Done', desc: "Expert execution - whether it's a website, repair, or document service." },
   { icon: CheckCircle, step: '04', title: 'You Review & Approve', desc: 'We deliver, you review. Satisfaction guaranteed or we revise for free.' },
 ];
 

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { AlertTriangle, TrendingDown, Clock, ShieldOff } from 'lucide-react';
 
 const problems = [
-  { icon: TrendingDown, title: 'Losing Customers?', desc: 'Without a professional online presence, you're invisible to potential clients searching for services.' },
+  { icon: TrendingDown, title: 'Losing Customers?', desc: "Without a professional online presence, you're invisible to potential clients searching for services." },
   { icon: Clock, title: 'Wasting Time on Tech?', desc: 'Hours spent fixing computers, setting up software, or troubleshooting issues that a pro can handle in minutes.' },
   { icon: ShieldOff, title: 'Security Concerns?', desc: 'Viruses, data loss, and unsecured networks put your business and personal data at risk every day.' },
   { icon: AlertTriangle, title: 'Outdated Systems?', desc: 'Slow PCs, broken printers, and old software are silently killing your productivity and profits.' },
