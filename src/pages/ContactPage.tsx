@@ -8,10 +8,16 @@ const ContactPage = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  // Honeypot for bot protection
+  const [hp, setHp] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Bot protection: honeypot
+    if (hp) return;
+
     if (!form.name || !form.email || !form.phone || !form.issue) {
       setError('Please fill all required fields.');
       return;
@@ -63,6 +69,16 @@ const ContactPage = () => {
           <div className="mb-4 rounded-lg bg-destructive/10 border border-destructive/30 px-4 py-2 text-sm text-destructive">{error}</div>
         )}
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Honeypot - invisible to humans */}
+          <input
+            type="text"
+            value={hp}
+            onChange={e => setHp(e.target.value)}
+            className="absolute -left-[9999px] opacity-0 h-0 w-0"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+          />
           <div className="grid gap-5 md:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1.5">Full Name *</label>

@@ -12,3 +12,21 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Block malicious bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+Sitemap: https://b2csolutionseller.lovable.app/sitemap.xml
