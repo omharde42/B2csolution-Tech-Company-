@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+const MAX_QUESTIONS = 15;
+const RATE_LIMIT_MS = 1500; // min time between messages
 
 interface Message {
   role: 'user' | 'assistant';
@@ -18,7 +20,10 @@ const ChatBot = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
+  const [lastSentAt, setLastSentAt] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Honeypot field for bot protection
+  const [honeypot, setHoneypot] = useState('');
 
   useEffect(() => {
     scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
@@ -26,14 +31,22 @@ const ChatBot = () => {
 
   const send = async () => {
     if (!input.trim() || isLoading) return;
+
+    // Bot protection: honeypot check
+    if (honeypot) return;
+
+    // Rate limiting
+    const now = Date.now();
+    if (now - lastSentAt < RATE_LIMIT_MS) return;
+    setLastSentAt(now);
+
     const userMsg = input.trim();
     setInput('');
 
     const newCount = questionCount + 1;
     setQuestionCount(newCount);
 
-    // After 15 questions, redirect to WhatsApp
-    if (newCount >= 15) {
+    if (newCount >= MAX_QUESTIONS) {
       setMessages(prev => [
         ...prev,
         { role: 'user', content: userMsg },
@@ -61,9 +74,16 @@ const ChatBot = () => {
         body: JSON.stringify({ messages: updatedMessages }),
       });
 
-      if (!resp.ok || !resp.body) {
-        throw new Error('Failed to get response');
+      if (resp.status === 429) {
+        setMessages(prev => [...prev, { role: 'assistant', content: "I'm receiving too many requests right now. Please wait a moment and try again." }]);
+        return;
       }
+      if (resp.status === 402) {
+        setMessages(prev => [...prev, { role: 'assistant', content: "AI service is temporarily unavailable. Please contact us on WhatsApp at +91 9882303030." }]);
+        return;
+      }
+
+      if (!resp.ok || !resp.body) throw new Error('Failed to get response');
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
@@ -111,6 +131,7 @@ const ChatBot = () => {
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-24 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110 glow-primary"
+        aria-label="Open AI Chat"
       >
         {open ? <X size={22} /> : <Bot size={22} />}
       </button>
@@ -148,6 +169,16 @@ const ChatBot = () => {
               )}
             </div>
             <div className="flex border-t border-border p-2">
+              {/* Honeypot - hidden from humans */}
+              <input
+                type="text"
+                value={honeypot}
+                onChange={e => setHoneypot(e.target.value)}
+                className="absolute -left-[9999px] opacity-0 h-0 w-0"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
               <input
                 value={input}
                 onChange={e => setInput(e.target.value)}

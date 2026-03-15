@@ -5,11 +5,28 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Simple in-memory rate limiter per IP
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 20;
+const RATE_WINDOW_MS = 60_000;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT;
+}
+
 const SYSTEM_PROMPT = `You are B2C Bot, the official AI assistant for B2CSOLUTION — a tech services company founded by Om Harde.
 
 ## Company Info
 - Founded by Om Harde (CEO). Partner: Raj Bonlawar (product management on Shopify & Printify, soon handling social media).
-- Soon launching B2C Designer — a creative design sub-brand.
+- Instagram: @raj_bon09 (Raj), @itzomharde_6 (Om)
+- Soon launching B2C Designer — a creative design sub-brand for Canva templates, Shopify & Printify products.
 
 ## Services & Pricing
 - Web Development: ₹4999 (custom responsive website)
@@ -29,6 +46,12 @@ const SYSTEM_PROMPT = `You are B2C Bot, the official AI assistant for B2CSOLUTIO
 - Email Setup: ₹150
 - PC Optimization: ₹350
 
+## B2CDesigner (Coming Soon)
+- Creative design company under B2CSOLUTION
+- Canva templates, brand kits, social media designs
+- Products on Shopify & Printify
+- Separate website launching soon
+
 ## Payment
 - UPI only: omharde300@oksbi or 9882303030@fam
 
@@ -45,7 +68,7 @@ const SYSTEM_PROMPT = `You are B2C Bot, the official AI assistant for B2CSOLUTIO
 
 ## Rules
 - Be friendly, concise, and helpful.
-- Answer ONLY about B2CSOLUTION services, pricing, contact, and tech help.
+- Answer ONLY about B2CSOLUTION services, pricing, contact, B2CDesigner, and tech help.
 - For complex issues or refund requests, redirect to WhatsApp: +91 9882303030.
 - Never make up information. If unsure, say so and suggest contacting the team.
 - Keep responses short (2-3 sentences max) unless the user asks for detail.`;
@@ -54,7 +77,21 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const ip = req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || "unknown";
+    if (isRateLimited(ip)) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { messages } = await req.json();
+
+    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 30) {
+      return new Response(JSON.stringify({ error: "Invalid request" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -65,10 +102,10 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-lite",
+        model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          ...messages.slice(-20), // keep last 20 messages for context
+          ...messages.slice(-20),
         ],
         stream: true,
       }),

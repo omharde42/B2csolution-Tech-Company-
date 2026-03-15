@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Crown, ShoppingBag, Rocket, Instagram, Github, Linkedin, Users } from 'lucide-react';
+import b2cDesignerLogo from '@/assets/b2cdesigner-logo.png';
 
 const team = [
   {
@@ -10,6 +11,7 @@ const team = [
     bio: 'Visionary tech entrepreneur and the main founder of B2CSOLUTION Tech Company. Passionate about delivering premium digital services and making technology accessible to businesses of all sizes.',
     highlight: 'Soon launching B2C Designer — a creative design company under the B2CSOLUTION umbrella.',
     highlightIcon: Rocket,
+    highlightImage: b2cDesignerLogo,
     socials: [
       { icon: Instagram, url: 'https://www.instagram.com/itzomharde_6/', label: '@itzomharde_6' },
       { icon: Github, url: 'https://github.com/omharde42', label: 'omharde42' },
@@ -23,6 +25,7 @@ const team = [
     bio: 'Key team member handling product management on Shopify and Printify platforms. Raj brings e-commerce expertise and operational efficiency to B2CSOLUTION.',
     highlight: 'Soon handling the social media strategy and operations for B2CSOLUTION.',
     highlightIcon: Rocket,
+    highlightImage: null,
     socials: [
       { icon: Instagram, url: 'https://www.instagram.com/raj_bon09/', label: '@raj_bon09' },
     ],
@@ -67,11 +70,14 @@ const TeamPage = () => (
 
           {/* Highlight */}
           <div className="rounded-xl bg-secondary/60 border border-border p-4 mb-5">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-2">
               <member.highlightIcon size={16} className="text-accent" />
               <span className="font-display text-xs font-bold text-accent uppercase tracking-wider">Coming Soon</span>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">{member.highlight}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">{member.highlight}</p>
+            {member.highlightImage && (
+              <img src={member.highlightImage} alt="B2CDesigner" className="w-32 rounded-lg shadow-md" loading="lazy" />
+            )}
           </div>
 
           {/* Socials */}

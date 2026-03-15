@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
+import b2cLogo from '@/assets/b2csolution-logo.png';
 
 const Hero = () => (
   <section className="relative min-h-[80vh] flex items-center justify-center bg-gradient-hero overflow-hidden">
@@ -8,10 +9,25 @@ const Hero = () => (
     <div className="absolute bottom-20 right-10 h-72 w-72 rounded-full bg-accent/5 blur-3xl" />
 
     <div className="container mx-auto px-4 py-20 text-center relative z-10">
+      {/* 3D Logo */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
+        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="mx-auto mb-8 w-40 h-40 md:w-52 md:h-52 perspective-1000"
+      >
+        <img
+          src={b2cLogo}
+          alt="B2CSOLUTION - Premium Digital Services"
+          className="w-full h-full object-contain drop-shadow-[0_0_40px_hsl(220,60%,35%,0.4)] hover:drop-shadow-[0_0_60px_hsl(0,78%,55%,0.5)] transition-all duration-500 hover:scale-105"
+          loading="eager"
+        />
+      </motion.div>
+
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: 0.7, delay: 0.3 }}
         className="font-display text-4xl font-black tracking-tight md:text-6xl lg:text-7xl mb-6"
       >
         <span className="text-gradient-brand">B2CSOLUTION</span>
@@ -19,7 +35,7 @@ const Hero = () => (
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
+        transition={{ delay: 0.5, duration: 0.6 }}
         className="mx-auto max-w-xl text-lg text-muted-foreground md:text-xl mb-8"
       >
         Premium digital services for your business. Web, App, Design, SEO & more — all under one roof.
@@ -27,7 +43,7 @@ const Hero = () => (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.7 }}
         className="flex flex-col sm:flex-row items-center justify-center gap-4"
       >
         <a href="#services" className="rounded-lg bg-accent px-8 py-3 font-display text-sm font-bold text-accent-foreground transition-transform hover:scale-105 glow-accent">
