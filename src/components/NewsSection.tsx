@@ -1,44 +1,39 @@
 import { motion } from 'framer-motion';
-import { Newspaper, TrendingUp, Calendar, ArrowRight, Sparkles } from 'lucide-react';
+import { Newspaper, TrendingUp, Calendar, Sparkles } from 'lucide-react';
 
 const news = [
   {
     date: 'March 2026',
     badge: '🔥 Highlight',
-    title: 'B2CDesigner Successfully Launching This Week!',
-    excerpt: 'B2CSOLUTION is proud to announce the official launch of B2CDesigner — our dedicated creative design company. Get ready for premium Canva templates, Shopify & Printify products, and much more.',
+    title: 'B2CDesigner Launching This Week!',
+    excerpt: 'B2C Solution is proud to announce the official launch of B2CDesigner — our dedicated creative design brand for premium Canva templates, Shopify & Printify products.',
     highlight: true,
   },
   {
     date: 'March 2026',
     badge: 'New',
-    title: 'B2CDesigner Website Coming Soon',
-    excerpt: 'A dedicated website for B2CDesigner is under development. Stay tuned for the official link and exclusive launch offers on design templates and merch.',
+    title: 'New Product Categories Added',
+    excerpt: 'We\'ve expanded our collection with hoodies, tote bags, and premium sticker packs. Check out the latest designs!',
     highlight: false,
   },
   {
     date: 'March 2026',
     badge: 'Update',
-    title: 'Expanding E-Commerce with Shopify & Printify',
-    excerpt: 'B2CDesigner products will be available for purchase on both Shopify and Printify platforms, making it easier than ever to get professional designs.',
+    title: 'Custom Design Service Now Live',
+    excerpt: 'Want your own unique design on a product? Our custom design service is now live. Share your idea and we\'ll create it!',
     highlight: false,
   },
 ];
 
 const NewsSection = () => (
-  <section className="py-16">
+  <section className="py-16 bg-secondary/30">
     <div className="container mx-auto px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-12"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <Newspaper size={24} />
         </div>
-        <h2 className="font-display text-3xl font-bold mb-3">Latest <span className="text-gradient-brand">News & Updates</span></h2>
-        <p className="text-muted-foreground">Stay updated with the latest from B2CSOLUTION</p>
+        <h2 className="font-display text-3xl font-bold mb-3">Latest <span className="text-gradient-brand">News</span></h2>
+        <p className="text-muted-foreground">Stay updated with B2C Solution</p>
       </motion.div>
 
       <div className="grid gap-6 md:grid-cols-3">

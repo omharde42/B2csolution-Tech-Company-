@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const HomeCTA = () => (
@@ -11,22 +11,25 @@ const HomeCTA = () => (
         viewport={{ once: true }}
         className="rounded-2xl bg-gradient-hero border border-border p-10 md:p-14 text-center"
       >
-        <h2 className="font-display text-2xl md:text-3xl font-bold mb-4">Ready to Get <span className="text-gradient-brand">Started?</span></h2>
+        <h2 className="font-display text-2xl md:text-3xl font-bold mb-4">Ready to Get Your <span className="text-gradient-brand">Custom Merch?</span></h2>
         <p className="text-muted-foreground max-w-md mx-auto mb-8">
-          Let's solve your tech problems today. Reach out and we'll get back to you within minutes.
+          Browse our collection or create something unique. Premium quality, affordable prices, fast delivery.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            to="/services"
+            className="inline-flex items-center gap-2 rounded-xl bg-accent px-8 py-3 font-display text-sm font-bold text-accent-foreground transition-transform hover:scale-105 glow-accent"
+          >
+            <ShoppingBag size={16} /> Shop Now
+          </Link>
           <a
-            href="https://api.whatsapp.com/send?phone=919882303030&text=Hi%20B2CSOLUTION!%20I%27d%20like%20to%20discuss%20a%20project."
+            href="https://api.whatsapp.com/send?phone=919882303030&text=Hi%20B2C%20Solution!%20I%27d%20like%20to%20place%20a%20custom%20order."
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg bg-accent px-8 py-3 font-display text-sm font-bold text-accent-foreground transition-transform hover:scale-105 glow-accent flex items-center gap-2"
+            className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-3 font-display text-sm font-bold text-foreground transition-colors hover:bg-secondary"
           >
-            <MessageCircle size={16} /> Chat on WhatsApp
+            <MessageCircle size={16} /> Custom Order
           </a>
-          <Link to="/contact" className="rounded-lg border border-border px-8 py-3 font-display text-sm font-bold text-foreground transition-colors hover:bg-secondary">
-            Contact Form
-          </Link>
         </div>
       </motion.div>
     </div>
