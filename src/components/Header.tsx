@@ -3,6 +3,7 @@ import { ShoppingCart, User, Menu, X, Shield } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
 import { useState } from 'react';
+import b2cLogo from '@/assets/b2csolution-logo.png';
 
 const Header = () => {
   const { items, setIsOpen } = useCart();
@@ -15,14 +16,15 @@ const Header = () => {
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
-          <span className="font-display text-xl font-bold tracking-wider text-gradient-brand md:text-2xl">
-            B2CSOLUTION
+          <img src={b2cLogo} alt="B2C Solution" className="h-8 w-8 object-contain" />
+          <span className="font-display text-lg font-bold tracking-wider text-gradient-brand md:text-xl">
+            B2C Solution
           </span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
           <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Home</Link>
-          <Link to="/services" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Services</Link>
+          <Link to="/services" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Products</Link>
           <Link to="/reviews" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Reviews</Link>
           <Link to="/team" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Team</Link>
           <Link to="/contact" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Contact</Link>
@@ -67,7 +69,7 @@ const Header = () => {
         <div className="border-t border-border bg-background px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-3">
             <Link to="/" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
-            <Link to="/services" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Services</Link>
+            <Link to="/services" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Products</Link>
             <Link to="/reviews" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Reviews</Link>
             <Link to="/team" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Team</Link>
             <Link to="/contact" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Contact</Link>

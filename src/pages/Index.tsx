@@ -1,11 +1,11 @@
 import Hero from '@/components/Hero';
-import ProblemSection from '@/components/ProblemSection';
-import Services from '@/components/Services';
-import ProcessSection from '@/components/ProcessSection';
+import BestSellers from '@/components/BestSellers';
+import WhyChooseUs from '@/components/WhyChooseUs';
+import CustomDesignService from '@/components/CustomDesignService';
 import Reviews from '@/components/Reviews';
+import AboutSection from '@/components/AboutSection';
+import ContactSocial from '@/components/ContactSocial';
 import NewsSection from '@/components/NewsSection';
-import PricingSection from '@/components/PricingSection';
-import FAQSection from '@/components/FAQSection';
 import B2CDesignerSection from '@/components/B2CDesignerSection';
 import HomeCTA from '@/components/HomeCTA';
 
@@ -13,14 +13,14 @@ const Index = () => {
   return (
     <div>
       <Hero />
-      <ProblemSection />
-      <Services />
+      <BestSellers />
+      <WhyChooseUs />
+      <CustomDesignService />
       <Reviews />
       <NewsSection />
-      <ProcessSection />
-      <PricingSection />
-      <FAQSection />
+      <AboutSection />
       <B2CDesignerSection />
+      <ContactSocial />
       <HomeCTA />
     </div>
   );
