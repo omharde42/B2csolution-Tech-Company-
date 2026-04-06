@@ -8,6 +8,8 @@ import ContactSocial from '@/components/ContactSocial';
 import NewsSection from '@/components/NewsSection';
 import B2CDesignerSection from '@/components/B2CDesignerSection';
 import HomeCTA from '@/components/HomeCTA';
+import PricingSection from '@/components/PricingSection';
+import FAQSection from '@/components/FAQSection';
 
 const Index = () => {
   return (
@@ -16,9 +18,11 @@ const Index = () => {
       <BestSellers />
       <WhyChooseUs />
       <CustomDesignService />
+      <PricingSection />
       <Reviews />
       <NewsSection />
       <AboutSection />
+      <FAQSection />
       <B2CDesignerSection />
       <ContactSocial />
       <HomeCTA />
