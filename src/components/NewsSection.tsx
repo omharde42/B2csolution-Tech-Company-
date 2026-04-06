@@ -3,24 +3,24 @@ import { Newspaper, TrendingUp, Calendar, Sparkles } from 'lucide-react';
 
 const news = [
   {
-    date: 'March 2026',
+    date: 'April 2026',
     badge: '🔥 Highlight',
-    title: 'B2CDesigner Launching This Week!',
-    excerpt: 'B2C Solution is proud to announce the official launch of B2CDesigner — our dedicated creative design brand for premium Canva templates, Shopify & Printify products.',
+    title: 'B2CDesigner Platform Launching Soon!',
+    excerpt: 'B2C Solution is launching B2CDesigner — a creative design platform for premium Canva templates and ready-to-sell digital products on Shopify & Printify. A dedicated website is coming soon.',
     highlight: true,
   },
   {
-    date: 'March 2026',
+    date: 'April 2026',
     badge: 'New',
-    title: 'New Product Categories Added',
-    excerpt: 'We\'ve expanded our collection with hoodies, tote bags, and premium sticker packs. Check out the latest designs!',
+    title: 'AI-Powered Development Services',
+    excerpt: 'We now offer AI tool development including chatbots, recommendation engines, and intelligent automation for businesses of all sizes.',
     highlight: false,
   },
   {
     date: 'March 2026',
     badge: 'Update',
-    title: 'Custom Design Service Now Live',
-    excerpt: 'Want your own unique design on a product? Our custom design service is now live. Share your idea and we\'ll create it!',
+    title: 'Expanded Ecommerce Solutions',
+    excerpt: 'Full-stack ecommerce development with Shopify, custom platforms, payment gateways, and inventory management systems.',
     highlight: false,
   },
 ];

@@ -1,30 +1,28 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Phone, Mail, Clock, ShoppingBag } from 'lucide-react';
+import { Instagram, Phone, Mail, Clock, Github, MessageSquare } from 'lucide-react';
 
 const Footer = () => (
   <footer className="border-t border-border bg-card mt-20">
     <div className="container mx-auto px-4 py-12">
       <div className="grid gap-10 md:grid-cols-4">
-        {/* Brand */}
         <div>
           <h3 className="font-display text-lg font-bold text-gradient-brand mb-3">B2C Solution</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Premium custom merchandise and creative design products. T-shirts, mugs, hoodies, phone cases & more.
+            Professional technology & digital solutions company. Websites, apps, AI tools, automation, and complete business solutions.
           </p>
         </div>
 
-        {/* Quick Links */}
         <div>
           <h4 className="font-display text-sm font-semibold text-foreground mb-3">Quick Links</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/" className="hover:text-foreground transition-colors">Home</Link></li>
-            <li><Link to="/services" className="hover:text-foreground transition-colors">Products</Link></li>
+            <li><Link to="/services" className="hover:text-foreground transition-colors">Services</Link></li>
             <li><Link to="/reviews" className="hover:text-foreground transition-colors">Reviews</Link></li>
             <li><Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
+            <li><Link to="/team" className="hover:text-foreground transition-colors">Team</Link></li>
           </ul>
         </div>
 
-        {/* Working Hours */}
         <div>
           <h4 className="font-display text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
             <Clock size={14} className="text-accent" /> Working Hours
@@ -36,7 +34,6 @@ const Footer = () => (
           </ul>
         </div>
 
-        {/* Contact */}
         <div>
           <h4 className="font-display text-sm font-semibold text-foreground mb-3">Connect With Us</h4>
           <div className="flex flex-col gap-2">

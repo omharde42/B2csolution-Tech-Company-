@@ -15,7 +15,7 @@ const CollaborationBanner = () => (
           In Collaboration with <span className="text-gradient-brand">Raj Bonlawar</span>
         </h3>
         <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-          Partner of B2CSOLUTION — handling product management on Shopify & Printify, and soon managing social media operations.
+          Team member of B2C Solution — handling product management, digital platform operations, and upcoming social media strategy.
         </p>
       </motion.div>
     </div>

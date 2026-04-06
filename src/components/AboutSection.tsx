@@ -12,7 +12,6 @@ const AboutSection = () => (
   <section className="py-20" id="about">
     <div className="container mx-auto px-4">
       <div className="grid gap-12 lg:grid-cols-2 items-center">
-        {/* Content */}
         <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
           <span className="mb-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[10px] font-display font-bold uppercase tracking-widest text-primary">
             About Us
@@ -20,21 +19,20 @@ const AboutSection = () => (
           <h2 className="font-display text-3xl font-bold mb-4">About <span className="text-gradient-brand">B2C Solution</span></h2>
           <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             B2C Solution is a technology company founded by <strong className="text-foreground">Om Harde</strong>, 
-            with <strong className="text-foreground">Raj Bonlawar</strong> as partner. We specialize in web development, 
-            graphic design, branding, and digital solutions for businesses of all sizes.
+            with <strong className="text-foreground">Raj Bonlawar</strong> as team member. We specialize in web development, 
+            app development, AI tools, automation, and complete digital solutions for businesses of all sizes.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             Our mission is simple: deliver high-quality, affordable, and innovative technology solutions that help 
-            businesses grow and establish a strong digital presence. Every project is crafted with care using modern 
+            businesses grow and establish a strong digital presence. Every project is built with modern 
             frameworks and industry best practices.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            From custom websites and mobile-friendly designs to brand identity and digital marketing — 
-            we are your one-stop shop for all technology and creative needs.
+            From custom websites and ecommerce platforms to AI-powered tools and business automation — 
+            we are your one-stop technology partner for digital transformation.
           </p>
         </motion.div>
 
-        {/* Stats grid */}
         <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
           <div className="grid grid-cols-2 gap-4">
             {stats.map((s, i) => (

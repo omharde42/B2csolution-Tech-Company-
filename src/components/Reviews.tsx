@@ -2,12 +2,12 @@ import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 
 const reviews = [
-  { name: 'Arjun P.', rating: 5, text: 'The T-shirt quality is amazing! Colors are vibrant and the print hasn\'t faded even after multiple washes. Will definitely order again.', product: 'Geometric T-Shirt' },
-  { name: 'Priya S.', rating: 5, text: 'Ordered a custom mug as a birthday gift. The design was exactly what I wanted, and it was delivered on time. Excellent service!', product: 'Custom Mug' },
-  { name: 'Rahul K.', rating: 4, text: 'Great hoodie quality! The print is clean and the fabric is comfortable. Slightly delayed shipping but worth the wait.', product: 'Street Art Hoodie' },
-  { name: 'Anita R.', rating: 5, text: 'Love my phone case! The design is gorgeous and it fits perfectly. B2C Solution has the best custom designs at affordable prices.', product: 'Phoenix Phone Case' },
-  { name: 'Vikram D.', rating: 5, text: 'Ordered sticker packs for my laptop — absolutely love them! High quality vinyl, waterproof, and the designs are so cool.', product: 'Sticker Pack' },
-  { name: 'Sneha M.', rating: 4, text: 'The tote bag is perfect for daily use. Sturdy material and the art print makes it stand out. Great value for money!', product: 'Splash Art Tote' },
+  { name: 'Arjun P.', rating: 5, text: 'B2C Solution built our company website from scratch. The design is modern, fast, and mobile-friendly. Highly professional team!', service: 'Website Development' },
+  { name: 'Priya S.', rating: 5, text: 'They developed a custom dashboard for our business operations. Clean UI, fast delivery, and great communication throughout.', service: 'Web Application' },
+  { name: 'Rahul K.', rating: 4, text: 'Got our ecommerce store set up with payment integration. Everything works smoothly. Will hire again for future projects.', service: 'Ecommerce Development' },
+  { name: 'Anita R.', rating: 5, text: 'Amazing AI chatbot integration for our customer support. Reduced our response time by 80%. Worth every rupee!', service: 'AI Tool Development' },
+  { name: 'Vikram D.', rating: 5, text: 'Professional website with SEO optimization. Our organic traffic increased 3x within two months. Excellent work!', service: 'Website + SEO' },
+  { name: 'Sneha M.', rating: 4, text: 'They automated our entire invoicing workflow. What used to take hours now happens automatically. Great technical skills!', service: 'Automation Solution' },
 ];
 
 const Reviews = () => (
@@ -17,8 +17,8 @@ const Reviews = () => (
         <span className="mb-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[10px] font-display font-bold uppercase tracking-widest text-primary">
           Testimonials
         </span>
-        <h2 className="font-display text-3xl font-bold mb-3">Customer <span className="text-gradient-brand">Reviews</span></h2>
-        <p className="text-muted-foreground">See what our customers are saying about their purchases</p>
+        <h2 className="font-display text-3xl font-bold mb-3">Client <span className="text-gradient-brand">Reviews</span></h2>
+        <p className="text-muted-foreground">See what our clients are saying about our work</p>
       </motion.div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {reviews.map((r, i) => (
@@ -39,7 +39,7 @@ const Reviews = () => (
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold">{r.name}</span>
-              <span className="rounded-full bg-secondary px-3 py-0.5 text-[10px] font-medium text-muted-foreground">{r.product}</span>
+              <span className="rounded-full bg-secondary px-3 py-0.5 text-[10px] font-medium text-muted-foreground">{r.service}</span>
             </div>
           </motion.div>
         ))}
