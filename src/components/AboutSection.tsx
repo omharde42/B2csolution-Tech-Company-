@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { Users, Target, Award, Globe } from 'lucide-react';
 
 const stats = [
-  { icon: Users, value: '500+', label: 'Happy Customers' },
-  { icon: Target, value: '1000+', label: 'Products Sold' },
+  { icon: Users, value: '50+', label: 'Clients Served' },
+  { icon: Target, value: '100+', label: 'Projects Delivered' },
   { icon: Award, value: '4.8★', label: 'Avg. Rating' },
-  { icon: Globe, value: 'Pan India', label: 'Delivery' },
+  { icon: Globe, value: 'Pan India', label: 'Service Reach' },
 ];
 
 const AboutSection = () => (
@@ -19,17 +19,18 @@ const AboutSection = () => (
           </span>
           <h2 className="font-display text-3xl font-bold mb-4">About <span className="text-gradient-brand">B2C Solution</span></h2>
           <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-            B2C Solution is a creative design and e-commerce brand founded by <strong className="text-foreground">Om Harde</strong>, 
-            with <strong className="text-foreground">Raj Bonlawar</strong> as partner. We specialize in premium custom merchandise — 
-            from T-shirts and hoodies to mugs and phone cases.
+            B2C Solution is a technology company founded by <strong className="text-foreground">Om Harde</strong>, 
+            with <strong className="text-foreground">Raj Bonlawar</strong> as partner. We specialize in web development, 
+            graphic design, branding, and digital solutions for businesses of all sizes.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-            Our mission is simple: deliver high-quality, affordable, and creatively designed products that help you express your unique style. 
-            Every product is made with care, using premium materials and cutting-edge printing technology.
+            Our mission is simple: deliver high-quality, affordable, and innovative technology solutions that help 
+            businesses grow and establish a strong digital presence. Every project is crafted with care using modern 
+            frameworks and industry best practices.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            We also offer digital services including web development, graphic design, and custom branding solutions — 
-            making us your one-stop shop for all creative needs.
+            From custom websites and mobile-friendly designs to brand identity and digital marketing — 
+            we are your one-stop shop for all technology and creative needs.
           </p>
         </motion.div>
 
