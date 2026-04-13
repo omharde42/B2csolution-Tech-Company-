@@ -28,6 +28,7 @@ const Header = () => {
           <Link to="/reviews" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Reviews</Link>
           <Link to="/team" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Team</Link>
           <Link to="/contact" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Contact</Link>
+          <Link to="/community" className="text-sm font-medium text-accent transition-colors hover:text-accent/80">Join Us</Link>
           {user && (
             <Link to="/dashboard" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
           )}
@@ -73,6 +74,7 @@ const Header = () => {
             <Link to="/reviews" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Reviews</Link>
             <Link to="/team" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Team</Link>
             <Link to="/contact" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Contact</Link>
+            <Link to="/community" onClick={() => setMobileMenu(false)} className="text-sm text-accent hover:text-accent/80">Join Us</Link>
             {user && <Link to="/dashboard" onClick={() => setMobileMenu(false)} className="text-sm text-muted-foreground hover:text-foreground">Dashboard</Link>}
             {isAdmin && <Link to="/admin" onClick={() => setMobileMenu(false)} className="text-sm text-accent hover:text-accent/80 flex items-center gap-1"><Shield size={14} /> Admin</Link>}
           </nav>
