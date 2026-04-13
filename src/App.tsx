@@ -22,6 +22,7 @@ import ReviewsPage from "./pages/ReviewsPage";
 import ContactPage from "./pages/ContactPage";
 import TeamPage from "./pages/TeamPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import JoinCommunity from "./pages/JoinCommunity";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/community" element={<JoinCommunity />} />
                 <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
