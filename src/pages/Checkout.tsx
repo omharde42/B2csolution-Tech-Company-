@@ -137,7 +137,8 @@ const Checkout = () => {
     setPlacing(false);
   };
 
-  const upiUrl = `upi://pay?pa=${selectedUpi}&pn=B2CSOLUTION&am=${total}&cu=INR&tn=B2CSOLUTION%20Order`;
+  const txnRef = `B2C${qrGenTime}`;
+  const upiUrl = `upi://pay?pa=${selectedUpi}&pn=B2CSOLUTION&am=${total}&cu=INR&tn=B2CSOLUTION%20Order%20${txnRef}&tr=${txnRef}`;
 
   if (orderPlaced) {
     return (
