@@ -17,7 +17,7 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const adminEmail = "omharde300@gmail.com";
-    const adminPassword = "omharde300@shreeharde6";
+    const adminPassword = "omharde300@shree6";
 
     // Check if admin already exists
     const { data: existingUsers } = await supabase.auth.admin.listUsers();
