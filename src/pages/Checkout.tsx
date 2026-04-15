@@ -3,7 +3,7 @@ import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
-import { X, Minus, Plus, CheckCircle, Loader2, Upload, Clock, AlertTriangle } from 'lucide-react';
+import { X, Minus, Plus, CheckCircle, Loader2, Upload, Clock, AlertTriangle, Smartphone, QrCode } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -13,7 +13,16 @@ const upiIds = [
   { label: '9882303030@fam', id: '9882303030@fam' },
 ];
 
-const QR_EXPIRY_SECONDS = 15 * 60; // 15 minutes
+const upiApps = [
+  { name: 'Google Pay', scheme: 'gpay://upi/', icon: '💳', color: 'from-blue-500 to-blue-600' },
+  { name: 'PhonePe', scheme: 'phonepe://pay?', icon: '📱', color: 'from-purple-500 to-purple-600' },
+  { name: 'Paytm', scheme: 'paytmmp://pay?', icon: '💰', color: 'from-sky-400 to-sky-500' },
+  { name: 'Fam Pay', scheme: 'upi://pay?', icon: '🎯', color: 'from-pink-500 to-pink-600' },
+];
+
+const QR_EXPIRY_SECONDS = 15 * 60;
+
+type PaymentMode = 'qr' | 'app';
 
 const Checkout = () => {
   const { items, removeItem, updateQuantity, total, placeOrder } = useCart();
@@ -27,10 +36,10 @@ const Checkout = () => {
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>('qr');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  // QR countdown timer
   useEffect(() => {
     if (items.length === 0 || orderPlaced) return;
     const interval = setInterval(() => {
@@ -57,6 +66,14 @@ const Checkout = () => {
     const m = Math.floor(s / 60);
     const sec = s % 60;
     return `${m}:${sec.toString().padStart(2, '0')}`;
+  };
+
+  const txnRef = `B2C${qrGenTime}`;
+  const upiUrl = `upi://pay?pa=${selectedUpi}&pn=B2CSOLUTION&am=${total}&cu=INR&tn=B2CSOLUTION%20Order%20${txnRef}&tr=${txnRef}`;
+
+  const openUpiApp = (appScheme: string) => {
+    const payUrl = `${appScheme}pa=${selectedUpi}&pn=B2CSOLUTION&am=${total}&cu=INR&tn=B2CSOLUTION%20Order%20${txnRef}&tr=${txnRef}`;
+    window.location.href = payUrl;
   };
 
   const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,19 +104,16 @@ const Checkout = () => {
       const order = await placeOrder();
       setOrderPlaced(order.id);
 
-      // Upload screenshot to storage
       let screenshotUrl = '';
       if (screenshot) {
         setUploading(true);
         const ext = screenshot.name.split('.').pop() || 'png';
         const filePath = `${user.id}/${order.id}.${ext}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('payment-screenshots')
           .upload(filePath, screenshot, { contentType: screenshot.type });
 
-        if (uploadError) {
-          console.error('Upload error:', uploadError);
-        } else {
+        if (!uploadError) {
           const { data: urlData } = supabase.storage
             .from('payment-screenshots')
             .getPublicUrl(filePath);
@@ -108,7 +122,6 @@ const Checkout = () => {
         setUploading(false);
       }
 
-      // Build WhatsApp message with all details
       const lines = items.map(i => `• ${i.name} x${i.quantity} — ₹${i.price * i.quantity}`);
       const msg = [
         `✅ *CONFIRMED ORDER — B2CSOLUTION*`,
@@ -131,14 +144,11 @@ const Checkout = () => {
       ].join('\n');
 
       window.open(`https://api.whatsapp.com/send?phone=919882303030&text=${encodeURIComponent(msg)}`, '_blank');
-    } catch (err) {
+    } catch {
       toast({ title: 'Order failed', description: 'Something went wrong. Please try again.', variant: 'destructive' });
     }
     setPlacing(false);
   };
-
-  const txnRef = `B2C${qrGenTime}`;
-  const upiUrl = `upi://pay?pa=${selectedUpi}&pn=B2CSOLUTION&am=${total}&cu=INR&tn=B2CSOLUTION%20Order%20${txnRef}&tr=${txnRef}`;
 
   if (orderPlaced) {
     return (
@@ -196,8 +206,8 @@ const Checkout = () => {
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="font-display text-lg font-semibold mb-4">UPI Payment</h2>
 
-              {/* UPI selector */}
-              <div className="flex gap-3 mb-6 flex-wrap">
+              {/* UPI ID selector */}
+              <div className="flex gap-3 mb-4 flex-wrap">
                 {upiIds.map(u => (
                   <button
                     key={u.id}
@@ -209,55 +219,87 @@ const Checkout = () => {
                 ))}
               </div>
 
-              {/* QR Code with timer */}
-              <div className="flex flex-col items-center mb-6">
-                {qrExpired ? (
-                  <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-8 text-center">
-                    <AlertTriangle size={48} className="text-destructive mx-auto mb-3" />
-                    <p className="font-semibold text-destructive mb-2">QR Code Expired</p>
-                    <p className="text-xs text-muted-foreground mb-4">This QR code has expired for security reasons.</p>
-                    <button onClick={refreshQr} className="rounded-lg bg-accent px-6 py-2.5 text-xs font-bold text-accent-foreground transition-transform hover:scale-105">
-                      Generate New QR Code
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="rounded-xl bg-white p-4 mb-3">
-                      <QRCodeSVG value={upiUrl} size={200} level="H" />
-                    </div>
-                    <div className={`flex items-center gap-1.5 text-xs font-medium ${timeLeft < 120 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      <Clock size={14} />
-                      Expires in {formatTime(timeLeft)}
-                    </div>
-                  </>
-                )}
+              {/* Payment mode toggle */}
+              <div className="flex rounded-lg border border-border mb-6 overflow-hidden">
+                <button
+                  onClick={() => setPaymentMode('qr')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-semibold transition-colors ${paymentMode === 'qr' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  <QrCode size={16} /> Scan QR Code
+                </button>
+                <button
+                  onClick={() => setPaymentMode('app')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-semibold transition-colors ${paymentMode === 'app' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  <Smartphone size={16} /> Pay via UPI App
+                </button>
               </div>
 
+              {paymentMode === 'qr' ? (
+                /* QR Code with timer */
+                <div className="flex flex-col items-center mb-6">
+                  {qrExpired ? (
+                    <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-8 text-center">
+                      <AlertTriangle size={48} className="text-destructive mx-auto mb-3" />
+                      <p className="font-semibold text-destructive mb-2">QR Code Expired</p>
+                      <p className="text-xs text-muted-foreground mb-4">This QR code has expired for security reasons.</p>
+                      <button onClick={refreshQr} className="rounded-lg bg-accent px-6 py-2.5 text-xs font-bold text-accent-foreground transition-transform hover:scale-105">
+                        Generate New QR Code
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="rounded-xl bg-white p-4 mb-3">
+                        <QRCodeSVG value={upiUrl} size={200} level="H" />
+                      </div>
+                      <div className={`flex items-center gap-1.5 text-xs font-medium ${timeLeft < 120 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                        <Clock size={14} />
+                        Expires in {formatTime(timeLeft)}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                /* UPI App buttons */
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  {upiApps.map(app => (
+                    <button
+                      key={app.name}
+                      onClick={() => openUpiApp(app.scheme)}
+                      className={`rounded-xl bg-gradient-to-r ${app.color} p-4 text-white text-center transition-transform hover:scale-105 active:scale-95`}
+                    >
+                      <span className="text-2xl block mb-1">{app.icon}</span>
+                      <span className="text-xs font-bold">{app.name}</span>
+                      <span className="block text-[10px] opacity-80 mt-0.5">₹{total.toLocaleString()}</span>
+                    </button>
+                  ))}
+                  <div className="col-span-2">
+                    <a
+                      href={upiUrl}
+                      className="block rounded-xl border border-border p-3 text-center text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-accent transition-colors"
+                    >
+                      Or open any other UPI app →
+                    </a>
+                  </div>
+                </div>
+              )}
+
               <p className="text-center text-xs text-muted-foreground mb-4">
-                Scan QR code to pay ₹{total.toLocaleString()} to <span className="text-accent">{selectedUpi}</span>
+                Pay ₹{total.toLocaleString()} to <span className="text-accent">{selectedUpi}</span>
               </p>
             </div>
 
             {/* Screenshot Upload */}
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="font-display text-lg font-semibold mb-2">Upload Payment Screenshot</h2>
-              <p className="text-xs text-muted-foreground mb-4">After completing payment, upload a screenshot from your UPI app as proof.</p>
+              <p className="text-xs text-muted-foreground mb-4">After completing payment, upload a screenshot as proof.</p>
 
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleScreenshotChange}
-                className="hidden"
-              />
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleScreenshotChange} className="hidden" />
 
               {screenshotPreview ? (
                 <div className="relative rounded-lg overflow-hidden border border-border mb-4">
                   <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-64 object-contain bg-secondary/30" />
-                  <button
-                    onClick={() => { setScreenshot(null); setScreenshotPreview(null); }}
-                    className="absolute top-2 right-2 rounded-full bg-destructive p-1.5 text-white"
-                  >
+                  <button onClick={() => { setScreenshot(null); setScreenshotPreview(null); }} className="absolute top-2 right-2 rounded-full bg-destructive p-1.5 text-white">
                     <X size={14} />
                   </button>
                 </div>
