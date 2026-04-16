@@ -23,6 +23,7 @@ import ContactPage from "./pages/ContactPage";
 import TeamPage from "./pages/TeamPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import JoinCommunity from "./pages/JoinCommunity";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
