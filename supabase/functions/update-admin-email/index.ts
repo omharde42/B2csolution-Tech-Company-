@@ -9,32 +9,42 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   )
 
-  // Find admin user by old email
+  const newEmail = 'b2csolution2436@gmail.com'
+  const password = 'omharde300@shree6'
+
+  // Check if user already exists
   const { data: { users } } = await supabase.auth.admin.listUsers()
-  const adminUser = users?.find(u => u.email === 'omharde300@gmail.com')
+  const existing = users?.find(u => u.email === newEmail)
   
-  if (!adminUser) {
-    return new Response(JSON.stringify({ error: 'Admin user not found', users: users?.map(u => u.email) }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404
+  if (existing) {
+    // Ensure admin role
+    const { data: roles } = await supabase.from('user_roles').select('*').eq('user_id', existing.id).eq('role', 'admin')
+    if (!roles || roles.length === 0) {
+      await supabase.from('user_roles').insert({ user_id: existing.id, role: 'admin' })
+    }
+    return new Response(JSON.stringify({ success: true, message: 'User exists, admin role ensured' }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   }
 
-  // Update email 
-  const { data, error } = await supabase.auth.admin.updateUserById(adminUser.id, {
-    email: 'b2csolution2436@gmail.com',
+  // Create new admin user
+  const { data, error } = await supabase.auth.admin.createUser({
+    email: newEmail,
+    password,
     email_confirm: true,
+    user_metadata: { name: 'B2C Solution Admin' }
   })
 
   if (error) {
-    return new Response(JSON.stringify({ error: error.message, details: JSON.stringify(error) }), {
+    return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500
     })
   }
 
-  // Update profile
-  await supabase.from('profiles').update({ email: 'b2csolution2436@gmail.com' }).eq('id', adminUser.id)
+  // Add admin role (profile is created by trigger)
+  await supabase.from('user_roles').insert({ user_id: data.user.id, role: 'admin' })
 
-  return new Response(JSON.stringify({ success: true, data }), {
+  return new Response(JSON.stringify({ success: true }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' }
   })
 })
