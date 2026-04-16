@@ -52,6 +52,7 @@ const App = () => (
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/community" element={<JoinCommunity />} />
                 <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
