@@ -16,7 +16,7 @@ serve(async (req) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    const adminEmail = "omharde300@gmail.com";
+    const adminEmail = "b2csolution2436@gmail.com";
     const adminPassword = "omharde300@shree6";
 
     // Check if admin already exists
@@ -24,12 +24,13 @@ serve(async (req) => {
     const existingAdmin = existingUsers?.users?.find(u => u.email === adminEmail);
 
     if (existingAdmin) {
-      // Ensure admin role exists
+      // Update password and ensure admin role
+      await supabase.auth.admin.updateUserById(existingAdmin.id, { password: adminPassword });
       await supabase.from("user_roles").upsert(
         { user_id: existingAdmin.id, role: "admin" },
         { onConflict: "user_id,role" }
       );
-      return new Response(JSON.stringify({ message: "Admin already exists, role ensured" }), {
+      return new Response(JSON.stringify({ message: "Admin already exists, password updated, role ensured" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -39,7 +40,7 @@ serve(async (req) => {
       email: adminEmail,
       password: adminPassword,
       email_confirm: true,
-      user_metadata: { name: "Om Harde" },
+      user_metadata: { name: "B2C Solution" },
     });
 
     if (error) throw error;
