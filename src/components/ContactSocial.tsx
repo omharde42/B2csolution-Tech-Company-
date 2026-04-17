@@ -12,7 +12,7 @@ const ContactSocial = () => (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {[
           { icon: Phone, title: 'Call / WhatsApp', value: '+91 98823 03030', href: 'https://api.whatsapp.com/send?phone=919882303030&text=Hi%20B2C%20Solution!' },
-          { icon: Mail, title: 'Email', value: 'b2csolution@gmail.com', href: 'mailto:b2csolution@gmail.com' },
+          { icon: Mail, title: 'Email', value: 'b2csolution2436@gmail.com', href: 'mailto:b2csolution2436@gmail.com' },
           { icon: Instagram, title: 'Instagram', value: '@itzomharde_6', href: 'https://www.instagram.com/itzomharde_6/' },
           { icon: MapPin, title: 'Location', value: 'India', href: '#' },
         ].map((c, i) => (
