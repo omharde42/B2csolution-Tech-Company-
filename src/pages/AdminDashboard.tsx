@@ -60,15 +60,52 @@ const AdminDashboard = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="font-display text-xl sm:text-2xl font-bold">Admin <span className="text-gradient-brand">Dashboard</span></h1>
-        <p className="text-xs sm:text-sm text-muted-foreground">Overview of your business metrics</p>
+    <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12 max-w-7xl">
+      {/* Header */}
+      <div className="mb-8 sm:mb-12 pb-6 border-b border-border">
+        <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight">
+          Admin <span className="text-gradient-brand">Dashboard</span>
+        </h1>
+        <p className="mt-2 text-sm sm:text-base text-muted-foreground">
+          Real-time overview of your business performance
+        </p>
       </div>
-      <AdminStatCards stats={stats} />
-      <AdminCharts orders={orders} pageViews={pageViews} contacts={contacts} />
-      <AdminInquiries contacts={contacts} />
-      <AdminOrders orders={orders} onStatusUpdate={handleStatusUpdate} />
+
+      {/* Overview */}
+      <section className="mb-10 sm:mb-14">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Overview</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Key metrics at a glance</p>
+        </div>
+        <AdminStatCards stats={stats} />
+      </section>
+
+      {/* Analytics */}
+      <section className="mb-10 sm:mb-14">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Analytics</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Trends from the last 7 days</p>
+        </div>
+        <AdminCharts orders={orders} pageViews={pageViews} contacts={contacts} />
+      </section>
+
+      {/* Inquiries */}
+      <section className="mb-10 sm:mb-14">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Customer Inquiries</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Latest contact form submissions</p>
+        </div>
+        <AdminInquiries contacts={contacts} />
+      </section>
+
+      {/* Orders */}
+      <section>
+        <div className="mb-4 sm:mb-6">
+          <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Order Management</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Update status and export records</p>
+        </div>
+        <AdminOrders orders={orders} onStatusUpdate={handleStatusUpdate} />
+      </section>
     </div>
   );
 };
