@@ -12,9 +12,8 @@ declare global {
   }
 }
 
-// reCAPTCHA v2 site key. Set VITE_RECAPTCHA_SITE_KEY in env (publishable key — safe in client) for production.
-// Falls back to Google's official test key (always passes — DO NOT use in production).
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+// Production reCAPTCHA v2 site key (publishable — safe in client code).
+const RECAPTCHA_SITE_KEY = '6LcEp7ssAAAAAEGL0nUmge013qcVNwoeGVuivQDE';
 
 const AuthModal = () => {
   const { showAuth, setShowAuth, login, signup } = useAuth();
