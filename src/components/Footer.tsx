@@ -45,9 +45,9 @@ const Footer = () => (
               className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-accent">
               <Phone size={14} /> +91 98823 03030
             </a>
-            <a href="mailto:b2csolution@gmail.com"
+            <a href="mailto:b2csolution2436@gmail.com"
               className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-accent">
-              <Mail size={14} /> b2csolution@gmail.com
+              <Mail size={14} /> b2csolution2436@gmail.com
             </a>
           </div>
         </div>
