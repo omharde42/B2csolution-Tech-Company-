@@ -25,42 +25,45 @@ const exportPDF = (data: any[], title: string) => {
 
 const AdminInquiries = ({ contacts }: Props) => {
   return (
-    <div className="rounded-xl border border-border bg-card p-3 sm:p-5 mb-6 sm:mb-10">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 sm:mb-4">
-        <h3 className="font-display text-xs sm:text-sm font-bold">Recent Inquiries</h3>
+    <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-5">
+        <div>
+          <h3 className="font-display text-sm sm:text-base font-bold text-foreground">Recent Inquiries</h3>
+          <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">{contacts.length} total submission{contacts.length === 1 ? '' : 's'}</p>
+        </div>
         {contacts.length > 0 && (
           <div className="flex gap-2">
-            <button onClick={() => exportCSV(contacts, 'inquiries.csv')} className="flex items-center gap-1 rounded-lg bg-secondary px-2 py-1.5 text-[10px] sm:text-xs text-muted-foreground hover:text-foreground transition-colors">
-              <FileDown size={12} /> CSV
+            <button onClick={() => exportCSV(contacts, 'inquiries.csv')} className="flex items-center gap-1.5 rounded-lg bg-secondary border border-border px-3 py-2 text-xs text-foreground hover:bg-secondary/70 hover:border-primary/40 transition-all">
+              <FileDown size={13} /> CSV
             </button>
-            <button onClick={() => exportPDF(contacts, 'Recent Inquiries')} className="flex items-center gap-1 rounded-lg bg-secondary px-2 py-1.5 text-[10px] sm:text-xs text-muted-foreground hover:text-foreground transition-colors">
-              <FileText size={12} /> PDF
+            <button onClick={() => exportPDF(contacts, 'Recent Inquiries')} className="flex items-center gap-1.5 rounded-lg bg-secondary border border-border px-3 py-2 text-xs text-foreground hover:bg-secondary/70 hover:border-primary/40 transition-all">
+              <FileText size={13} /> PDF
             </button>
           </div>
         )}
       </div>
       {contacts.length === 0 ? (
-        <p className="text-xs sm:text-sm text-muted-foreground">No inquiries yet.</p>
+        <p className="text-sm text-muted-foreground py-8 text-center">No inquiries yet.</p>
       ) : (
-        <div className="overflow-x-auto -mx-3 sm:mx-0">
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
           <table className="w-full text-xs sm:text-sm min-w-[500px]">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left py-2 px-2 sm:px-3 text-[10px] sm:text-xs font-medium text-muted-foreground">Name</th>
-                <th className="text-left py-2 px-2 sm:px-3 text-[10px] sm:text-xs font-medium text-muted-foreground">Email</th>
-                <th className="text-left py-2 px-2 sm:px-3 text-[10px] sm:text-xs font-medium text-muted-foreground">Phone</th>
-                <th className="text-left py-2 px-2 sm:px-3 text-[10px] sm:text-xs font-medium text-muted-foreground">Issue</th>
-                <th className="text-left py-2 px-2 sm:px-3 text-[10px] sm:text-xs font-medium text-muted-foreground">Date</th>
+                <th className="text-left py-3 px-3 sm:px-4 text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</th>
+                <th className="text-left py-3 px-3 sm:px-4 text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
+                <th className="text-left py-3 px-3 sm:px-4 text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Phone</th>
+                <th className="text-left py-3 px-3 sm:px-4 text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Issue</th>
+                <th className="text-left py-3 px-3 sm:px-4 text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Date</th>
               </tr>
             </thead>
             <tbody>
               {contacts.slice(0, 20).map((c: any) => (
-                <tr key={c.id} className="border-b border-border/50 hover:bg-secondary/50">
-                  <td className="py-2 px-2 sm:px-3">{c.name}</td>
-                  <td className="py-2 px-2 sm:px-3 text-muted-foreground truncate max-w-[120px]">{c.email}</td>
-                  <td className="py-2 px-2 sm:px-3 text-muted-foreground">{c.phone}</td>
-                  <td className="py-2 px-2 sm:px-3"><span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent">{c.issue}</span></td>
-                  <td className="py-2 px-2 sm:px-3 text-muted-foreground">{new Date(c.created_at).toLocaleDateString()}</td>
+                <tr key={c.id} className="border-b border-border/50 hover:bg-secondary/40 transition-colors">
+                  <td className="py-3 px-3 sm:px-4 font-medium">{c.name}</td>
+                  <td className="py-3 px-3 sm:px-4 text-muted-foreground truncate max-w-[140px]">{c.email}</td>
+                  <td className="py-3 px-3 sm:px-4 text-muted-foreground">{c.phone}</td>
+                  <td className="py-3 px-3 sm:px-4"><span className="rounded-full bg-accent/10 border border-accent/20 px-2.5 py-1 text-[10px] sm:text-xs text-accent font-medium">{c.issue}</span></td>
+                  <td className="py-3 px-3 sm:px-4 text-muted-foreground">{new Date(c.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>

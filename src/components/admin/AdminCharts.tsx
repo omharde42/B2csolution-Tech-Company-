@@ -30,38 +30,41 @@ const AdminCharts = ({ orders, pageViews, contacts }: Props) => {
   contacts.forEach((c: any) => { issueCounts[c.issue] = (issueCounts[c.issue] || 0) + 1; });
   const issueData = Object.entries(issueCounts).map(([name, value]) => ({ name, value }));
 
+  const cardClass = "rounded-2xl border border-border bg-card p-4 sm:p-6 transition-colors hover:border-primary/30";
+  const titleClass = "font-display text-sm sm:text-base font-bold mb-4 sm:mb-5 text-foreground";
+
   return (
-    <div className="grid gap-4 sm:gap-6 lg:grid-cols-2 mb-6 sm:mb-10">
-      <div className="rounded-xl border border-border bg-card p-3 sm:p-5">
-        <h3 className="font-display text-xs sm:text-sm font-bold mb-3 sm:mb-4">Orders (Last 7 Days)</h3>
-        <ResponsiveContainer width="100%" height={200}>
+    <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+      <div className={cardClass}>
+        <h3 className={titleClass}>Orders (Last 7 Days)</h3>
+        <ResponsiveContainer width="100%" height={220}>
           <BarChart data={ordersPerDay}>
-            <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'hsl(215,15%,55%)' }} />
-            <YAxis tick={{ fontSize: 10, fill: 'hsl(215,15%,55%)' }} width={30} />
+            <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} />
+            <YAxis tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} width={32} />
             <Tooltip contentStyle={tooltipStyle} />
-            <Bar dataKey="orders" fill="hsl(220,60%,50%)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="orders" fill="hsl(220,60%,50%)" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-3 sm:p-5">
-        <h3 className="font-display text-xs sm:text-sm font-bold mb-3 sm:mb-4">Visitor Traffic (Last 7 Days)</h3>
-        <ResponsiveContainer width="100%" height={200}>
+      <div className={cardClass}>
+        <h3 className={titleClass}>Visitor Traffic (Last 7 Days)</h3>
+        <ResponsiveContainer width="100%" height={220}>
           <LineChart data={viewsPerDay}>
-            <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'hsl(215,15%,55%)' }} />
-            <YAxis tick={{ fontSize: 10, fill: 'hsl(215,15%,55%)' }} width={30} />
+            <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} />
+            <YAxis tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} width={32} />
             <Tooltip contentStyle={tooltipStyle} />
-            <Line type="monotone" dataKey="views" stroke="hsl(145,65%,42%)" strokeWidth={2} dot={{ r: 3 }} />
+            <Line type="monotone" dataKey="views" stroke="hsl(145,65%,42%)" strokeWidth={2.5} dot={{ r: 4 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       {issueData.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-3 sm:p-5">
-          <h3 className="font-display text-xs sm:text-sm font-bold mb-3 sm:mb-4">Inquiries by Type</h3>
-          <ResponsiveContainer width="100%" height={200}>
+        <div className={cardClass}>
+          <h3 className={titleClass}>Inquiries by Type</h3>
+          <ResponsiveContainer width="100%" height={220}>
             <PieChart>
-              <Pie data={issueData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={{ fontSize: 10 }}>
+              <Pie data={issueData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={75} label={{ fontSize: 11 }}>
                 {issueData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>
               <Tooltip contentStyle={tooltipStyle} />
@@ -70,14 +73,14 @@ const AdminCharts = ({ orders, pageViews, contacts }: Props) => {
         </div>
       )}
 
-      <div className="rounded-xl border border-border bg-card p-3 sm:p-5">
-        <h3 className="font-display text-xs sm:text-sm font-bold mb-3 sm:mb-4">Revenue (Last 7 Days)</h3>
-        <ResponsiveContainer width="100%" height={200}>
+      <div className={cardClass}>
+        <h3 className={titleClass}>Revenue (Last 7 Days)</h3>
+        <ResponsiveContainer width="100%" height={220}>
           <BarChart data={ordersPerDay}>
-            <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'hsl(215,15%,55%)' }} />
-            <YAxis tick={{ fontSize: 10, fill: 'hsl(215,15%,55%)' }} width={30} />
+            <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} />
+            <YAxis tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} width={32} />
             <Tooltip contentStyle={tooltipStyle} />
-            <Bar dataKey="revenue" fill="hsl(145,65%,42%)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="revenue" fill="hsl(145,65%,42%)" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
