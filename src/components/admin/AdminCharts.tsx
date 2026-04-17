@@ -7,21 +7,48 @@ interface Props {
   orders: any[];
   pageViews: any[];
   contacts: any[];
+  from?: Date | null;
+  to?: Date | null;
 }
 
-const AdminCharts = ({ orders, pageViews, contacts }: Props) => {
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(); d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split('T')[0];
-  });
+const AdminCharts = ({ orders, pageViews, contacts, from, to }: Props) => {
+  // Build day buckets for the active range. Default to last 7 days when no range.
+  const days: string[] = (() => {
+    let start: Date;
+    let end: Date;
+    if (from && to) {
+      start = new Date(from); start.setHours(0, 0, 0, 0);
+      end = new Date(to); end.setHours(0, 0, 0, 0);
+    } else if (orders.length || pageViews.length) {
+      // "All time" — span from earliest record to today (capped at 60 days for readability)
+      const all = [...orders, ...pageViews].map(r => new Date(r.created_at).getTime());
+      const min = Math.min(...all);
+      start = new Date(min); start.setHours(0, 0, 0, 0);
+      end = new Date(); end.setHours(0, 0, 0, 0);
+      const diff = Math.round((end.getTime() - start.getTime()) / 86400000);
+      if (diff > 60) start = new Date(end.getTime() - 60 * 86400000);
+    } else {
+      end = new Date(); end.setHours(0, 0, 0, 0);
+      start = new Date(end); start.setDate(end.getDate() - 6);
+    }
+    const out: string[] = [];
+    const cur = new Date(start);
+    while (cur.getTime() <= end.getTime()) {
+      out.push(cur.toISOString().split('T')[0]);
+      cur.setDate(cur.getDate() + 1);
+    }
+    return out;
+  })();
 
-  const ordersPerDay = last7Days.map(day => ({
+  const rangeLabel = days.length === 1 ? 'Today' : `Last ${days.length} Days`;
+
+  const ordersPerDay = days.map(day => ({
     date: day.slice(5),
     orders: orders.filter(o => o.created_at?.startsWith(day)).length,
     revenue: orders.filter(o => o.created_at?.startsWith(day)).reduce((s: number, o: any) => s + Number(o.total), 0),
   }));
 
-  const viewsPerDay = last7Days.map(day => ({
+  const viewsPerDay = days.map(day => ({
     date: day.slice(5),
     views: pageViews.filter(v => v.created_at?.startsWith(day)).length,
   }));
