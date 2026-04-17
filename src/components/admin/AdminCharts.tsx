@@ -63,7 +63,7 @@ const AdminCharts = ({ orders, pageViews, contacts, from, to }: Props) => {
   return (
     <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
       <div className={cardClass}>
-        <h3 className={titleClass}>Orders (Last 7 Days)</h3>
+        <h3 className={titleClass}>Orders ({rangeLabel})</h3>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={ordersPerDay}>
             <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} />
@@ -75,7 +75,7 @@ const AdminCharts = ({ orders, pageViews, contacts, from, to }: Props) => {
       </div>
 
       <div className={cardClass}>
-        <h3 className={titleClass}>Visitor Traffic (Last 7 Days)</h3>
+        <h3 className={titleClass}>Visitor Traffic ({rangeLabel})</h3>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={viewsPerDay}>
             <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} />
@@ -101,7 +101,7 @@ const AdminCharts = ({ orders, pageViews, contacts, from, to }: Props) => {
       )}
 
       <div className={cardClass}>
-        <h3 className={titleClass}>Revenue (Last 7 Days)</h3>
+        <h3 className={titleClass}>Revenue ({rangeLabel})</h3>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={ordersPerDay}>
             <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(215,15%,55%)' }} />
