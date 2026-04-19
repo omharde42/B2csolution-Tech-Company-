@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search, X } from 'lucide-react';
 import AdminStatCards from '@/components/admin/AdminStatCards';
 import AdminCharts from '@/components/admin/AdminCharts';
 import AdminInquiries from '@/components/admin/AdminInquiries';
@@ -20,6 +20,7 @@ const AdminDashboard = () => {
     const { from, to } = computeRange('7d');
     return { preset: '7d', from, to };
   });
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) navigate('/');
@@ -51,6 +52,31 @@ const AdminDashboard = () => {
   const filteredOrders = useMemo(() => orders.filter(o => inRange(o.created_at)), [orders, dateRange]);
   const filteredContacts = useMemo(() => contacts.filter(c => inRange(c.created_at)), [contacts, dateRange]);
   const filteredViews = useMemo(() => pageViews.filter(v => inRange(v.created_at)), [pageViews, dateRange]);
+
+  const q = search.trim().toLowerCase();
+  const searchedOrders = useMemo(() => {
+    if (!q) return filteredOrders;
+    return filteredOrders.filter((o: any) => {
+      const items = Array.isArray(o.items) ? o.items : [];
+      const customerName = items[0]?.customerName || items[0]?.name || '';
+      const customerEmail = items[0]?.customerEmail || items[0]?.email || '';
+      return (
+        String(o.order_id || '').toLowerCase().includes(q) ||
+        String(customerName).toLowerCase().includes(q) ||
+        String(customerEmail).toLowerCase().includes(q) ||
+        String(o.status || '').toLowerCase().includes(q)
+      );
+    });
+  }, [filteredOrders, q]);
+  const searchedContacts = useMemo(() => {
+    if (!q) return filteredContacts;
+    return filteredContacts.filter((c: any) =>
+      String(c.name || '').toLowerCase().includes(q) ||
+      String(c.email || '').toLowerCase().includes(q) ||
+      String(c.phone || '').toLowerCase().includes(q) ||
+      String(c.issue || '').toLowerCase().includes(q)
+    );
+  }, [filteredContacts, q]);
 
   const stats = useMemo(() => ({
     totalOrders: filteredOrders.length,
@@ -86,6 +112,35 @@ const AdminDashboard = () => {
       {/* Date Range Filter */}
       <AdminDateFilter value={dateRange} onChange={setDateRange} />
 
+      {/* Search Bar */}
+      <div className="rounded-2xl border border-border bg-card p-3 sm:p-4 mb-6 sm:mb-8">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search orders & inquiries by name, email, order ID, phone or status..."
+            className="w-full rounded-lg bg-secondary border border-border pl-10 pr-10 py-2.5 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-all"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+        {search && (
+          <p className="mt-2 text-[11px] sm:text-xs text-muted-foreground">
+            Found <span className="text-foreground font-semibold">{searchedOrders.length}</span> order{searchedOrders.length === 1 ? '' : 's'} and{' '}
+            <span className="text-foreground font-semibold">{searchedContacts.length}</span> inquir{searchedContacts.length === 1 ? 'y' : 'ies'} matching "{search}"
+          </p>
+        )}
+      </div>
+
       {/* Overview */}
       <section className="mb-10 sm:mb-14">
         <div className="mb-4 sm:mb-6">
@@ -116,7 +171,7 @@ const AdminDashboard = () => {
           <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Customer Inquiries</h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">Latest contact form submissions</p>
         </div>
-        <AdminInquiries contacts={filteredContacts} />
+        <AdminInquiries contacts={searchedContacts} />
       </section>
 
       {/* Orders */}
@@ -125,7 +180,7 @@ const AdminDashboard = () => {
           <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Order Management</h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">Update status and export records</p>
         </div>
-        <AdminOrders orders={filteredOrders} onStatusUpdate={handleStatusUpdate} />
+        <AdminOrders orders={searchedOrders} onStatusUpdate={handleStatusUpdate} />
       </section>
     </div>
   );
