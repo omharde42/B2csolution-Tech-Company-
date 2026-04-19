@@ -114,10 +114,11 @@ const Checkout = () => {
           .upload(filePath, screenshot, { contentType: screenshot.type });
 
         if (!uploadError) {
-          const { data: urlData } = supabase.storage
+          // Bucket is private — generate a short-lived signed URL (7 days) for admin reference
+          const { data: signed } = await supabase.storage
             .from('payment-screenshots')
-            .getPublicUrl(filePath);
-          screenshotUrl = urlData?.publicUrl || '';
+            .createSignedUrl(filePath, 60 * 60 * 24 * 7);
+          screenshotUrl = signed?.signedUrl || '';
         }
         setUploading(false);
       }
