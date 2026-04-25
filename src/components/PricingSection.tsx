@@ -1,42 +1,68 @@
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Check, MessageCircle } from 'lucide-react';
+
+const waLink = (plan: string) =>
+  `https://api.whatsapp.com/send?phone=919882303030&text=${encodeURIComponent(
+    `Hi B2C Solution! I'm interested in the ${plan} website plan.`,
+  )}`;
 
 const packages = [
   {
-    name: 'Starter',
-    price: 500,
-    desc: 'Essential services for individuals',
-    features: ['Windows/Linux Installation', 'Virus Removal', 'Software Installation', 'Basic PC Optimization', 'Email Support'],
+    name: 'Basic Website',
+    price: 3000,
+    tagline: 'Perfect for getting online',
+    features: ['1–3 pages', 'Mobile-friendly design', 'Contact form', 'Delivered in 2–3 days'],
     popular: false,
   },
   {
-    name: 'Professional',
-    price: 4999,
-    desc: 'Complete solutions for businesses',
-    features: ['Custom Website Development', 'Full Security Suite', 'Data Recovery', 'Printer & WiFi Setup', 'Priority WhatsApp Support'],
+    name: 'Business Website',
+    price: 5000,
+    tagline: 'Most popular for small businesses',
+    features: [
+      'Everything in Basic',
+      'WhatsApp contact integration',
+      'Up to 5 pages',
+      'Google-ready setup',
+    ],
     popular: true,
   },
   {
-    name: 'Enterprise',
-    price: 9999,
-    desc: 'All-inclusive business package',
-    features: ['AI Website Builder + Custom Dev', 'App Development', 'Full Hardware Support', 'SEO & Social Media', 'Dedicated Account Manager'],
+    name: 'Advanced',
+    price: 8000,
+    priceSuffix: '+',
+    tagline: 'For businesses ready to scale',
+    features: [
+      'Everything in Business',
+      'Automation features',
+      'Custom forms & integrations',
+      'Priority support',
+    ],
     popular: false,
   },
 ];
 
 const PricingSection = () => {
-  const navigate = useNavigate();
-
   return (
-    <section className="py-20 bg-secondary/30">
+    <section className="py-20 bg-secondary/30" id="pricing">
       <div className="container mx-auto px-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <h2 className="font-display text-3xl font-bold mb-3">Our <span className="text-gradient-brand">Packages</span></h2>
-          <p className="text-muted-foreground">Choose the plan that fits your needs. All prices are starting from.</p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="mb-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[10px] font-display font-bold uppercase tracking-widest text-primary">
+            Simple Pricing
+          </span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">
+            Pick a plan that fits <span className="text-gradient-brand">your business</span>
+          </h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            One-time payment. No hidden fees. Pay only when you're happy.
+          </p>
         </motion.div>
-        <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
+
+        <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
           {packages.map((pkg, i) => (
             <motion.div
               key={pkg.name}
@@ -44,7 +70,11 @@ const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`rounded-xl border p-6 flex flex-col ${pkg.popular ? 'border-accent bg-card glow-accent relative' : 'border-border bg-card'}`}
+              className={`relative rounded-2xl border p-7 flex flex-col ${
+                pkg.popular
+                  ? 'border-accent bg-card glow-accent md:scale-[1.03]'
+                  : 'border-border bg-card'
+              }`}
             >
               {pkg.popular && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1 text-[10px] font-bold text-accent-foreground uppercase tracking-wider">
@@ -52,25 +82,33 @@ const PricingSection = () => {
                 </span>
               )}
               <h3 className="font-display text-lg font-bold mb-1">{pkg.name}</h3>
-              <p className="text-xs text-muted-foreground mb-4">{pkg.desc}</p>
+              <p className="text-xs text-muted-foreground mb-5">{pkg.tagline}</p>
               <div className="mb-6">
-                <span className="font-display text-3xl font-black text-[hsl(var(--price))]">₹{pkg.price.toLocaleString()}</span>
-                <span className="text-xs text-muted-foreground ml-1">onwards</span>
+                <span className="font-display text-4xl font-black text-[hsl(var(--price))]">
+                  ₹{pkg.price.toLocaleString()}
+                  {pkg.priceSuffix || ''}
+                </span>
               </div>
-              <ul className="space-y-2 mb-6 flex-1">
-                {pkg.features.map(f => (
-                  <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <Check size={14} className="text-[hsl(var(--price))] mt-0.5 shrink-0" />
+              <ul className="space-y-2.5 mb-7 flex-1">
+                {pkg.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <Check size={16} className="text-[hsl(var(--price))] mt-0.5 shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
-              <button
-                onClick={() => navigate('/services')}
-                className={`w-full rounded-lg py-2.5 text-xs font-bold transition-transform hover:scale-[1.02] ${pkg.popular ? 'bg-accent text-accent-foreground glow-accent' : 'border border-border text-foreground hover:bg-secondary'}`}
+              <a
+                href={waLink(pkg.name)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`w-full inline-flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold transition-transform hover:scale-[1.02] ${
+                  pkg.popular
+                    ? 'bg-accent text-accent-foreground glow-accent'
+                    : 'border border-border text-foreground hover:bg-secondary'
+                }`}
               >
-                Get Started
-              </button>
+                <MessageCircle size={14} /> Order on WhatsApp
+              </a>
             </motion.div>
           ))}
         </div>
