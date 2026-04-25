@@ -5,6 +5,7 @@ import WhyChooseUs from '@/components/WhyChooseUs';
 import Reviews from '@/components/Reviews';
 import FAQSection from '@/components/FAQSection';
 import HomeCTA from '@/components/HomeCTA';
+import TrackOrderCTA from '@/components/TrackOrderCTA';
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <ProjectsSection />
       <WhyChooseUs />
       <Reviews />
+      <TrackOrderCTA />
       <FAQSection />
       <HomeCTA />
     </div>
