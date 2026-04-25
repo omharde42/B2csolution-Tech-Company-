@@ -253,9 +253,15 @@ const Checkout = () => {
                       <div className="rounded-xl bg-white p-4 mb-3">
                         <QRCodeSVG value={upiUrl} size={200} level="H" />
                       </div>
-                      <div className={`flex items-center gap-1.5 text-xs font-medium ${timeLeft < 120 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                      <div className={`flex items-center gap-1.5 text-xs font-medium mb-3 ${timeLeft < 120 ? 'text-destructive' : 'text-muted-foreground'}`}>
                         <Clock size={14} />
                         Expires in {formatTime(timeLeft)}
+                      </div>
+                      <div className="rounded-lg bg-secondary/50 border border-border p-3 text-center max-w-xs">
+                        <p className="text-[11px] text-muted-foreground leading-relaxed">
+                          <span className="font-semibold text-foreground">Supported:</span> Google Pay, PhonePe, Paytm, FamPay, or any UPI app.<br />
+                          After payment, upload your screenshot below and tap <span className="font-semibold text-foreground">Confirm Order</span>. We'll verify and start your project within minutes.
+                        </p>
                       </div>
                     </>
                   )}
