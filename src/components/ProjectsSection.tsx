@@ -1,23 +1,38 @@
 import { motion } from 'framer-motion';
-import bakery from '@/assets/project-bakery.jpg';
-import gym from '@/assets/project-gym.jpg';
-import interior from '@/assets/project-interior.jpg';
+import { Github, ExternalLink } from 'lucide-react';
+
+const GITHUB = 'https://github.com/omharde42';
 
 const projects = [
   {
-    img: bakery,
-    title: 'Local Bakery',
-    desc: 'This website helps a local bakery get more orders directly from WhatsApp.',
+    title: 'B2C Solution Website',
+    desc: 'The official B2C Solution business website — services, pricing, and customer flow built for conversions.',
+    repo: `${GITHUB}/b2c-solution`,
+    tag: 'Business Website',
   },
   {
-    img: gym,
-    title: 'Neighborhood Gym',
-    desc: 'This website helps a fitness studio get new members through online sign-ups.',
+    title: 'Jarvis AI Assistant',
+    desc: 'A personal AI assistant inspired by Jarvis — voice commands, automation, and smart task handling.',
+    repo: `${GITHUB}/jarvis-ai`,
+    tag: 'AI Assistant',
   },
   {
-    img: interior,
-    title: 'Interior Boutique',
-    desc: 'This website helps an interior design studio get more enquiries from new customers.',
+    title: 'Payment Tracker',
+    desc: 'Track payments, dues, and customer balances in one clean dashboard built for small businesses.',
+    repo: `${GITHUB}/payment-tracker`,
+    tag: 'Finance Tool',
+  },
+  {
+    title: 'ID Card Generator',
+    desc: 'Generate professional ID cards instantly from a simple form — print-ready and customizable.',
+    repo: `${GITHUB}/id-card-generator`,
+    tag: 'Utility Tool',
+  },
+  {
+    title: 'Real Estate Website',
+    desc: 'A modern real estate listing website with property search, gallery, and enquiry workflow.',
+    repo: `${GITHUB}/real-estate-website`,
+    tag: 'Real Estate',
   },
 ];
 
@@ -31,42 +46,57 @@ const ProjectsSection = () => (
         className="text-center mb-12"
       >
         <span className="mb-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[10px] font-display font-bold uppercase tracking-widest text-primary">
-          Recent Work
+          Real Projects · Real Code
         </span>
         <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">
-          Websites that <span className="text-gradient-brand">grow businesses</span>
+          Projects we've <span className="text-gradient-brand">actually built</span>
         </h2>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Real websites we've built for small businesses just like yours.
+          Live work from our GitHub — websites, tools, and AI products shipped end-to-end.
         </p>
       </motion.div>
 
-      <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
         {projects.map((p, i) => (
           <motion.article
             key={p.title}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="group overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"
+            transition={{ delay: i * 0.08 }}
+            className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"
           >
-            <div className="aspect-[4/3] overflow-hidden bg-secondary">
-              <img
-                src={p.img}
-                alt={`${p.title} website example`}
-                width={800}
-                height={600}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Github size={18} />
+              </div>
+              <span className="rounded-full border border-border bg-background/60 px-2.5 py-0.5 text-[10px] font-display font-bold uppercase tracking-wider text-muted-foreground">
+                {p.tag}
+              </span>
             </div>
-            <div className="p-5">
-              <h3 className="font-display text-base font-bold mb-1.5">{p.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
-            </div>
+            <h3 className="font-display text-base font-bold mb-1.5">{p.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{p.desc}</p>
+            <a
+              href={p.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-display font-bold text-foreground transition-colors hover:bg-secondary"
+            >
+              View Project <ExternalLink size={14} />
+            </a>
           </motion.article>
         ))}
+      </div>
+
+      <div className="mt-10 text-center">
+        <a
+          href={GITHUB}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm font-display font-bold text-primary hover:underline"
+        >
+          <Github size={16} /> See all projects on GitHub
+        </a>
       </div>
     </div>
   </section>
