@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MessageCircle, ArrowRight, Zap, IndianRupee, Smile } from 'lucide-react';
+import { MessageCircle, ArrowRight, Zap, IndianRupee, Smile, FolderGit2 } from 'lucide-react';
 
 const WA_LINK =
   'https://api.whatsapp.com/send?phone=919882303030&text=Hi%20B2C%20Solution!%20I%20want%20a%20website%20for%20my%20business.';
@@ -40,17 +40,17 @@ const Hero = () => (
             <ArrowRight size={14} />
           </a>
           <a
-            href="#pricing"
+            href="#projects"
             className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-3.5 font-display text-sm font-bold text-foreground transition-colors hover:bg-secondary"
           >
-            See Pricing
+            <FolderGit2 size={16} /> View Projects
           </a>
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
           {[
             { icon: Zap, label: 'Ready in 2–3 days' },
-            { icon: IndianRupee, label: 'Starts at ₹3000' },
+            { icon: IndianRupee, label: 'AI Website starting at ₹3500' },
             { icon: Smile, label: 'Made for small business' },
           ].map((b) => (
             <div key={b.label} className="flex items-center gap-2 text-xs text-muted-foreground">
