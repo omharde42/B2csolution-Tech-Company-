@@ -77,7 +77,7 @@ const ProjectsSection = () => (
             <h3 className="font-display text-base font-bold mb-1.5">{p.title}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{p.desc}</p>
             <a
-              href={p.repo}
+              href={GITHUB}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-display font-bold text-foreground transition-colors hover:bg-secondary"
