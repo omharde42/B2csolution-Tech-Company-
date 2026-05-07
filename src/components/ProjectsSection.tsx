@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Github, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink, User } from 'lucide-react';
 
 const GITHUB = 'https://github.com/omharde42';
 
@@ -37,34 +37,34 @@ const projects = [
 ];
 
 const ProjectsSection = () => (
-  <section className="py-20" id="projects">
+  <section className="py-16 sm:py-20" id="projects">
     <div className="container mx-auto px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-12"
+        className="text-center mb-10 sm:mb-12"
       >
         <span className="mb-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[10px] font-display font-bold uppercase tracking-widest text-primary">
           Real Projects · Real Code
         </span>
-        <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">
+        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
           Projects we've <span className="text-gradient-brand">actually built</span>
         </h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
+        <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto">
           Live work from our GitHub — websites, tools, and AI products shipped end-to-end.
         </p>
       </motion.div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
         {projects.map((p, i) => (
           <motion.article
             key={p.title}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"
+            transition={{ delay: i * 0.07 }}
+            className="group flex flex-col rounded-2xl border border-border bg-card p-5 sm:p-6 transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -76,14 +76,27 @@ const ProjectsSection = () => (
             </div>
             <h3 className="font-display text-base font-bold mb-1.5">{p.title}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{p.desc}</p>
-            <a
-              href={GITHUB}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-display font-bold text-foreground transition-colors hover:bg-secondary"
-            >
-              View Project <ExternalLink size={14} />
-            </a>
+
+            <div className="flex flex-col sm:flex-row gap-2 mt-auto">
+              <a
+                href={p.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${p.title} repository on GitHub`}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-xs sm:text-sm font-display font-bold text-primary-foreground transition-transform hover:scale-[1.02]"
+              >
+                <Github size={14} /> View Repo <ExternalLink size={12} />
+              </a>
+              <a
+                href={GITHUB}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open omharde42 GitHub profile"
+                className="sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2.5 text-xs sm:text-sm font-display font-bold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              >
+                <User size={14} /> Profile
+              </a>
+            </div>
           </motion.article>
         ))}
       </div>
