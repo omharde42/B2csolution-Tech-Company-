@@ -1,19 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { X, Loader2, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from '@/hooks/use-toast';
-
-declare global {
-  interface Window {
-    grecaptcha: any;
-    onRecaptchaLoad: () => void;
-  }
-}
-
-// Production reCAPTCHA v2 site key (publishable — safe in client code).
-const RECAPTCHA_SITE_KEY = '6LcEp7ssAAAAAEGL0nUmge013qcVNwoeGVuivQDE';
 
 const AuthModal = () => {
   const { showAuth, setShowAuth, login, signup } = useAuth();
@@ -24,73 +14,14 @@ const AuthModal = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [captchaReady, setCaptchaReady] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState('');
-  const captchaRef = useRef<HTMLDivElement>(null);
-  const captchaWidgetId = useRef<number | null>(null);
-
-  // Load reCAPTCHA script
-  useEffect(() => {
-    if (document.getElementById('recaptcha-script')) {
-      if (window.grecaptcha?.render) setCaptchaReady(true);
-      return;
-    }
-    window.onRecaptchaLoad = () => setCaptchaReady(true);
-    const script = document.createElement('script');
-    script.id = 'recaptcha-script';
-    script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-  }, []);
-
-  // Render captcha widget
-  useEffect(() => {
-    if (captchaReady && captchaRef.current && showAuth && captchaWidgetId.current === null) {
-      try {
-        captchaWidgetId.current = window.grecaptcha.render(captchaRef.current, {
-          sitekey: RECAPTCHA_SITE_KEY,
-          callback: (token: string) => setCaptchaToken(token),
-          'expired-callback': () => setCaptchaToken(''),
-          theme: 'dark',
-          size: 'normal',
-        });
-      } catch (e) {
-        // Widget already rendered
-      }
-    }
-  }, [captchaReady, showAuth, mode]);
-
-  // Reset captcha when modal closes or mode changes
-  useEffect(() => {
-    if (!showAuth) {
-      captchaWidgetId.current = null;
-      setCaptchaToken('');
-    }
-  }, [showAuth]);
 
   useEffect(() => {
-    setCaptchaToken('');
-    captchaWidgetId.current = null;
     setError('');
   }, [mode]);
-
-  const resetCaptcha = () => {
-    if (window.grecaptcha && captchaWidgetId.current !== null) {
-      try { window.grecaptcha.reset(captchaWidgetId.current); } catch {}
-    }
-    setCaptchaToken('');
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    if (!captchaToken && mode !== 'forgot') {
-      setError('Please complete the CAPTCHA verification');
-      return;
-    }
-
     setLoading(true);
     try {
       if (mode === 'forgot') {
@@ -104,16 +35,15 @@ const AuthModal = () => {
           setMode('login');
         }
       } else if (mode === 'signup') {
-        if (password.length < 6) { setError('Password must be at least 6 characters'); setLoading(false); resetCaptcha(); return; }
+        if (password.length < 6) { setError('Password must be at least 6 characters'); setLoading(false); return; }
         const result = await signup(email, password, name || email.split('@')[0]);
-        if (result.error) { setError(result.error); resetCaptcha(); }
+        if (result.error) setError(result.error);
       } else {
         const result = await login(email, password);
-        if (result.error) { setError(result.error); resetCaptcha(); }
+        if (result.error) setError(result.error);
       }
     } catch {
       setError('Something went wrong');
-      resetCaptcha();
     }
     setLoading(false);
   };
@@ -173,14 +103,7 @@ const AuthModal = () => {
                   </div>
                 )}
 
-                {/* reCAPTCHA */}
-                {mode !== 'forgot' && (
-                  <div className="flex justify-center">
-                    <div ref={captchaRef} key={mode} />
-                  </div>
-                )}
-
-                {mode !== 'forgot' && mode === 'login' && (
+                {mode === 'login' && (
                   <button
                     type="button"
                     onClick={() => setMode('forgot')}
@@ -192,7 +115,7 @@ const AuthModal = () => {
 
                 <button
                   type="submit"
-                  disabled={loading || (mode !== 'forgot' && !captchaToken)}
+                  disabled={loading}
                   className="w-full rounded-lg bg-accent py-3 text-sm font-bold text-accent-foreground transition-colors hover:bg-accent/80 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {loading && <Loader2 size={16} className="animate-spin" />}
