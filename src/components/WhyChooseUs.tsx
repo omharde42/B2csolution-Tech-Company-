@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
-import { Zap, IndianRupee, Smile, Sparkles } from 'lucide-react';
+import { Zap, IndianRupee, ShieldCheck, Sparkles, MessageCircle, RefreshCw } from 'lucide-react';
 
 const reasons = [
-  { icon: Zap, title: 'Fast delivery', desc: 'Your website ready in just 2–3 days.' },
-  { icon: IndianRupee, title: 'Affordable pricing', desc: 'Honest prices that fit a small business budget.' },
-  { icon: Smile, title: 'Built for small business', desc: 'Made to bring you real customers, not just clicks.' },
-  { icon: Sparkles, title: 'Clean & modern design', desc: 'Looks great on phone, tablet, and desktop.' },
+  { icon: Zap, title: 'Fast 2–3 day delivery', desc: 'Most websites go live within 72 hours of payment confirmation.' },
+  { icon: IndianRupee, title: 'Transparent pricing', desc: 'Starts at ₹3,500. No hidden fees, no surprise renewals.' },
+  { icon: ShieldCheck, title: 'Secure UPI payments', desc: 'Pay via verified UPI IDs with screenshot-based order verification.' },
+  { icon: Sparkles, title: 'Modern, mobile-first design', desc: 'Pixel-perfect on phone, tablet and desktop — built with React.' },
+  { icon: MessageCircle, title: 'Direct WhatsApp support', desc: 'Talk to the founder directly on +91 98823 03030. No call centres.' },
+  { icon: RefreshCw, title: '7-day free revisions', desc: 'Free design and content tweaks for a week after handover.' },
 ];
 
 const WhyChooseUs = () => (
@@ -24,7 +26,7 @@ const WhyChooseUs = () => (
           Everything you need to take your business online — without the headache.
         </p>
       </motion.div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+      <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
         {reasons.map((r, i) => (
           <motion.div
             key={r.title}
