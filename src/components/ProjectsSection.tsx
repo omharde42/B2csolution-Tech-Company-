@@ -82,19 +82,19 @@ const ProjectsSection = () => (
                 href={p.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Open ${p.title} repository on GitHub`}
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-xs sm:text-sm font-display font-bold text-primary-foreground transition-transform hover:scale-[1.02]"
+                aria-label={`Open ${p.title} repository on GitHub in a new tab`}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-xs sm:text-sm font-display font-bold text-primary-foreground transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                <Github size={14} /> View Repo <ExternalLink size={12} />
+                <Github size={14} aria-hidden="true" /> View Repo <ExternalLink size={12} aria-hidden="true" />
               </a>
               <a
                 href={GITHUB}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Open omharde42 GitHub profile"
-                className="sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2.5 text-xs sm:text-sm font-display font-bold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                aria-label="Open omharde42 GitHub profile in a new tab"
+                className="sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2.5 text-xs sm:text-sm font-display font-bold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                <User size={14} /> Profile
+                <User size={14} aria-hidden="true" /> Profile
               </a>
             </div>
           </motion.article>
@@ -106,9 +106,10 @@ const ProjectsSection = () => (
           href={GITHUB}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm font-display font-bold text-primary hover:underline"
+          aria-label="See all projects on GitHub in a new tab"
+          className="inline-flex items-center gap-2 text-sm font-display font-bold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md px-1 py-0.5"
         >
-          <Github size={16} /> See all projects on GitHub
+          <Github size={16} aria-hidden="true" /> See all projects on GitHub
         </a>
       </div>
     </div>
