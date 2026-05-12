@@ -106,9 +106,10 @@ const ProjectsSection = () => (
           href={GITHUB}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm font-display font-bold text-primary hover:underline"
+          aria-label="See all projects on GitHub in a new tab"
+          className="inline-flex items-center gap-2 text-sm font-display font-bold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md px-1 py-0.5"
         >
-          <Github size={16} /> See all projects on GitHub
+          <Github size={16} aria-hidden="true" /> See all projects on GitHub
         </a>
       </div>
     </div>
