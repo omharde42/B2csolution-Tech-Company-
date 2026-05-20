@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { MessageCircle, Send, Users, Megaphone, ArrowRight, Zap, Gift, Bell } from 'lucide-react';
+import SEO from '@/components/SEO';
 
 const channels = [
   {
@@ -31,6 +32,11 @@ const benefits = [
 
 const JoinCommunity = () => (
   <div className="min-h-screen">
+    <SEO
+      title="Join the B2C Solution Community — WhatsApp & Telegram"
+      description="Join the B2C Solution WhatsApp and Telegram channels for exclusive offers, tech tips, updates, and priority support."
+      path="/community"
+    />
     {/* Hero */}
     <section className="py-20 bg-gradient-to-b from-primary/10 to-background">
       <div className="container mx-auto px-4 text-center">

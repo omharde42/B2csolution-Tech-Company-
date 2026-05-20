@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle, Loader2, Phone, Mail, MessageCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import SEO from '@/components/SEO';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', issue: '', message: '' });
@@ -57,6 +58,11 @@ const ContactPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-2xl">
+      <SEO
+        title="Contact B2C Solution — WhatsApp, Email & Inquiry Form"
+        description="Get in touch with B2C Solution on WhatsApp, email, or via our quick inquiry form. Same-day replies during working hours."
+        path="/contact"
+      />
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
         <h1 className="font-display text-3xl font-bold mb-3">Contact <span className="text-gradient-brand">Us</span></h1>
         <p className="text-muted-foreground">Have a question or need help? Fill out the form below.</p>
