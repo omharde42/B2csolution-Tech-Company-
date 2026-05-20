@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Crown, ShoppingBag, Rocket, Instagram, Github, Linkedin, Users } from 'lucide-react';
+import SEO from '@/components/SEO';
 import b2cDesignerLogo from '@/assets/b2cdesigner-logo.png';
 
 const team = [
@@ -34,6 +35,11 @@ const team = [
 
 const TeamPage = () => (
   <div className="container mx-auto px-4 py-10 max-w-4xl">
+    <SEO
+      title="Our Team — B2C Solution"
+      description="Meet the founders and team behind B2C Solution — building affordable websites, AI tools, and digital products for small businesses."
+      path="/team"
+    />
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-14">
       <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
         <Users size={28} />

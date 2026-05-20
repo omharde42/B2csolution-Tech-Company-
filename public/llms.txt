@@ -1,0 +1,12 @@
+# B2C Solution Seller
+
+> B2C Solution is a technology and digital services company offering websites, AI tools, automation, and custom digital products for small businesses — starting at ₹3500 for an AI website.
+
+## Pages
+
+- [Home](/): Overview of services, pricing, projects, and how to get started.
+- [Services](/services): Full catalog of digital services and pricing.
+- [Reviews](/reviews): Customer reviews and testimonials.
+- [Team](/team): Team members and collaborators.
+- [Contact](/contact): WhatsApp, email, and inquiry form.
+- [Join the Community](/community): Telegram and WhatsApp community links.
