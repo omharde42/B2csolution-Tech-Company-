@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.enforce_role_assignment() FROM PUBLIC, anon, authenticated;
