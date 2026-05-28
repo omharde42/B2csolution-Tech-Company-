@@ -1,6 +1,9 @@
 import Hero from '@/components/Hero';
+import StatsSection from '@/components/StatsSection';
 import PricingSection from '@/components/PricingSection';
 import ProjectsSection from '@/components/ProjectsSection';
+import CaseStudies from '@/components/CaseStudies';
+import ProcessTimeline from '@/components/ProcessTimeline';
 import WhyChooseUs from '@/components/WhyChooseUs';
 import Reviews from '@/components/Reviews';
 import FAQSection from '@/components/FAQSection';
@@ -37,9 +40,12 @@ const Index = () => {
         jsonLd={faqSchema}
       />
       <Hero />
+      <StatsSection />
+      <WhyChooseUs />
+      <ProcessTimeline />
       <PricingSection />
       <ProjectsSection />
-      <WhyChooseUs />
+      <CaseStudies />
       <Reviews />
       <TrackOrderCTA />
       <FAQSection />
