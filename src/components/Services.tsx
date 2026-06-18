@@ -57,38 +57,52 @@ const ServiceCard = ({ service, index }: { service: Service; index: number }) =>
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.05 }}
-      className="group rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/40 hover:glow-primary"
+      className="group relative rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:-translate-y-1 hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.4)] overflow-hidden"
     >
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-        <Icon size={24} />
-      </div>
-      <h3 className="font-display text-base font-bold mb-2">{service.name}</h3>
-      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{service.desc}</p>
-      {service.tiers && (
-        <div className="flex gap-2 mb-3">
-          {service.tiers.map((tier, i) => (
-            <button
-              key={tier.label}
-              onClick={() => setSelectedTier(i)}
-              className={`rounded-md border px-3 py-1 text-xs font-medium transition-colors ${selectedTier === i ? 'border-[hsl(var(--price))] bg-[hsl(var(--price)/0.1)] text-[hsl(var(--price))]' : 'border-border text-muted-foreground hover:text-foreground'}`}
-            >
-              {tier.label}
-            </button>
-          ))}
+      {/* hover gradient glow */}
+      <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+
+      <div className="relative">
+        <div className="mb-4 flex items-start justify-between">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 text-primary transition-all group-hover:from-primary group-hover:to-primary/80 group-hover:text-primary-foreground group-hover:shadow-[0_0_24px_hsl(var(--primary)/0.5)]">
+            <Icon size={22} />
+          </div>
+          <span className="rounded-full border border-border/60 bg-background/50 px-2.5 py-0.5 text-[10px] font-display font-bold uppercase tracking-wider text-muted-foreground">
+            {service.category}
+          </span>
         </div>
-      )}
-      <div className="flex items-center justify-between">
-        <span className="font-display text-lg font-bold text-[hsl(var(--price))]">₹{currentPrice.toLocaleString()}</span>
-        <button
-          onClick={() => addItem({ id: service.tiers ? `${service.id}-${service.tiers[selectedTier].label}` : service.id, name: service.tiers ? `${service.name} (${service.tiers[selectedTier].label})` : service.name, price: currentPrice, description: service.desc })}
-          className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-accent-foreground transition-transform hover:scale-105"
-        >
-          Add to Cart
-        </button>
+        <h3 className="font-display text-base font-bold mb-2">{service.name}</h3>
+        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{service.desc}</p>
+        {service.tiers && (
+          <div className="flex gap-2 mb-3">
+            {service.tiers.map((tier, i) => (
+              <button
+                key={tier.label}
+                onClick={() => setSelectedTier(i)}
+                className={`rounded-md border px-3 py-1 text-xs font-medium transition-colors ${selectedTier === i ? 'border-[hsl(var(--price))] bg-[hsl(var(--price)/0.1)] text-[hsl(var(--price))]' : 'border-border text-muted-foreground hover:text-foreground'}`}
+              >
+                {tier.label}
+              </button>
+            ))}
+          </div>
+        )}
+        <div className="flex items-center justify-between pt-2 border-t border-border/50">
+          <div>
+            <span className="font-display text-xl font-bold text-[hsl(var(--price))]">₹{currentPrice.toLocaleString()}</span>
+            <span className="ml-1 text-[10px] text-muted-foreground">onwards</span>
+          </div>
+          <button
+            onClick={() => addItem({ id: service.tiers ? `${service.id}-${service.tiers[selectedTier].label}` : service.id, name: service.tiers ? `${service.name} (${service.tiers[selectedTier].label})` : service.name, price: currentPrice, description: service.desc })}
+            className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-accent-foreground transition-all hover:scale-105 hover:shadow-[0_0_20px_hsl(var(--accent)/0.5)]"
+          >
+            Add to Cart
+          </button>
+        </div>
       </div>
     </motion.div>
   );
 };
+
 
 const Services = ({ showAll = false }: { showAll?: boolean }) => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);

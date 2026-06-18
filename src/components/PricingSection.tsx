@@ -70,47 +70,51 @@ const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`relative rounded-2xl border p-7 flex flex-col ${
+              className={`relative rounded-2xl p-[1.5px] flex ${
                 pkg.popular
-                  ? 'border-accent bg-card glow-accent md:scale-[1.03]'
-                  : 'border-border bg-card'
+                  ? 'bg-gradient-to-br from-accent via-primary to-accent md:scale-[1.04] shadow-[0_20px_60px_-20px_hsl(var(--accent)/0.5)]'
+                  : 'bg-border'
               }`}
             >
-              {pkg.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1 text-[10px] font-bold text-accent-foreground uppercase tracking-wider">
-                  Most Popular
-                </span>
-              )}
-              <h3 className="font-display text-lg font-bold mb-1">{pkg.name}</h3>
-              <p className="text-xs text-muted-foreground mb-5">{pkg.tagline}</p>
-              <div className="mb-6">
-                <span className="font-display text-4xl font-black text-[hsl(var(--price))]">
-                  ₹{pkg.price.toLocaleString()}
-                  {pkg.priceSuffix || ''}
-                </span>
+              <div className="relative w-full rounded-2xl bg-card p-7 flex flex-col">
+                {pkg.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-accent to-primary px-4 py-1 text-[10px] font-bold text-accent-foreground uppercase tracking-wider shadow-lg">
+                    Most Popular
+                  </span>
+                )}
+                <h3 className="font-display text-lg font-bold mb-1">{pkg.name}</h3>
+                <p className="text-xs text-muted-foreground mb-5">{pkg.tagline}</p>
+                <div className="mb-6 flex items-baseline gap-1">
+                  <span className="font-display text-4xl font-black text-[hsl(var(--price))]">
+                    ₹{pkg.price.toLocaleString()}
+                    {pkg.priceSuffix || ''}
+                  </span>
+                  <span className="text-xs text-muted-foreground">/ one-time</span>
+                </div>
+                <ul className="space-y-2.5 mb-7 flex-1">
+                  {pkg.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Check size={16} className="text-[hsl(var(--price))] mt-0.5 shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={waLink(pkg.name)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full inline-flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold transition-all hover:scale-[1.02] ${
+                    pkg.popular
+                      ? 'bg-gradient-to-r from-accent to-primary text-accent-foreground glow-accent'
+                      : 'border border-border text-foreground hover:bg-secondary hover:border-primary/40'
+                  }`}
+                >
+                  <MessageCircle size={14} /> Order on WhatsApp
+                </a>
               </div>
-              <ul className="space-y-2.5 mb-7 flex-1">
-                {pkg.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check size={16} className="text-[hsl(var(--price))] mt-0.5 shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={waLink(pkg.name)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-full inline-flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold transition-transform hover:scale-[1.02] ${
-                  pkg.popular
-                    ? 'bg-accent text-accent-foreground glow-accent'
-                    : 'border border-border text-foreground hover:bg-secondary'
-                }`}
-              >
-                <MessageCircle size={14} /> Order on WhatsApp
-              </a>
             </motion.div>
           ))}
+
         </div>
       </div>
     </section>
