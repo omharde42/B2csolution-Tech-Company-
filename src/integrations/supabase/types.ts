@@ -14,6 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_logs: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          intent: string | null
+          role: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          intent?: string | null
+          role: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          intent?: string | null
+          role?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_logs_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          converted: boolean
+          created_at: string
+          handed_off: boolean
+          id: string
+          last_intent: string | null
+          last_stage: string
+          message_count: number
+          session_key: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          converted?: boolean
+          created_at?: string
+          handed_off?: boolean
+          id?: string
+          last_intent?: string | null
+          last_stage?: string
+          message_count?: number
+          session_key: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          converted?: boolean
+          created_at?: string
+          handed_off?: boolean
+          id?: string
+          last_intent?: string | null
+          last_stage?: string
+          message_count?: number
+          session_key?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       contacts: {
         Row: {
           created_at: string
@@ -41,6 +118,39 @@ export type Database = {
           message?: string
           name?: string
           phone?: string
+        }
+        Relationships: []
+      }
+      faq_entries: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          id: string
+          is_active: boolean
+          question: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -115,6 +225,83 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          order_id: string | null
+          priority: string
+          status: string
+          subject: string
+          ticket_no: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description: string
+          id?: string
+          order_id?: string | null
+          priority?: string
+          status?: string
+          subject: string
+          ticket_no?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          order_id?: string | null
+          priority?: string
+          status?: string
+          subject?: string
+          ticket_no?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ticket_messages: {
+        Row: {
+          author_role: string
+          body: string
+          created_at: string
+          id: string
+          ticket_id: string
+          user_id: string | null
+        }
+        Insert: {
+          author_role?: string
+          body: string
+          created_at?: string
+          id?: string
+          ticket_id: string
+          user_id?: string | null
+        }
+        Update: {
+          author_role?: string
+          body?: string
+          created_at?: string
+          id?: string
+          ticket_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
