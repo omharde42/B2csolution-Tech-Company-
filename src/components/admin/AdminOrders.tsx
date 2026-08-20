@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FileDown, FileText, ChevronDown } from 'lucide-react';
+import { buildCsv, downloadCsv, openPrintableTable } from '@/lib/exportSafe';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'in-progress', 'completed'];
 const statusColors: Record<string, string> = {
