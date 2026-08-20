@@ -71,17 +71,18 @@ const AdminDashboard = () => {
     if (!isAdmin || activeTab !== 'telegram') return;
     const fetchTelegramData = async () => {
       setLoadingTelegram(true);
+      const sb = supabase as any;
       const [leadsRes, convsRes, usersRes] = await Promise.all([
-        supabase
+        sb
           .from('telegram_leads')
           .select('*')
           .order('created_at', { ascending: false }),
-        supabase
+        sb
           .from('telegram_conversations')
           .select('*, telegram_users(username, first_name, last_name)')
           .order('updated_at', { ascending: false })
           .limit(50),
-        supabase
+        sb
           .from('telegram_users')
           .select('telegram_id, last_seen'),
       ]);
@@ -108,7 +109,7 @@ const AdminDashboard = () => {
 
   // ─── Load Messages for a Conversation ──────────────────────────────────────
   const loadConversationMessages = async (conversationId: string) => {
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from('telegram_messages')
       .select('*')
       .eq('conversation_id', conversationId)
@@ -118,7 +119,7 @@ const AdminDashboard = () => {
 
   // ─── Lead Status Update ─────────────────────────────────────────────────────
   const handleLeadStatusUpdate = async (leadId: string, status: string) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('telegram_leads')
       .update({ status })
       .eq('id', leadId);
