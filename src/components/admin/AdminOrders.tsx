@@ -20,23 +20,15 @@ interface Props {
   onStatusUpdate: (orderId: string, status: string) => void;
 }
 
+const ORDER_KEYS = ['order_id', 'total', 'status', 'created_at'];
+
 const exportCSV = (data: any[], filename: string) => {
   if (!data.length) return;
-  const keys = ['order_id', 'total', 'status', 'created_at'];
-  const csv = [keys.join(','), ...data.map(r => keys.map(k => `"${String(r[k] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
-  URL.revokeObjectURL(url);
+  downloadCsv(buildCsv(ORDER_KEYS, data), filename);
 };
 
 const exportPDF = (data: any[], title: string) => {
-  const win = window.open('', '_blank');
-  if (!win) return;
-  const keys = ['order_id', 'total', 'status', 'created_at'];
-  const rows = data.map(r => `<tr>${keys.map(k => `<td style="border:1px solid #333;padding:4px;font-size:11px;color:#ddd">${r[k] ?? ''}</td>`).join('')}</tr>`).join('');
-  win.document.write(`<html><head><title>${title}</title><style>body{background:#0f172a;color:#e2e8f0;font-family:sans-serif}table{border-collapse:collapse;width:100%}th{background:#1e293b;color:#94a3b8;padding:6px;border:1px solid #334155;font-size:11px;text-align:left}</style></head><body><h2>${title}</h2><table><tr>${keys.map(k => `<th>${k}</th>`).join('')}</tr>${rows}</table><script>setTimeout(()=>window.print(),500)</script></body></html>`);
-  win.document.close();
+  openPrintableTable(title, ORDER_KEYS, data);
 };
 
 const AdminOrders = ({ orders, onStatusUpdate }: Props) => {
