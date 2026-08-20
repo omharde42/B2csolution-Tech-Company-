@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: string
+          id: string
+          record_count: number
+          resource: string
+          resource_id: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: string
+          id?: string
+          record_count?: number
+          resource?: string
+          resource_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: string
+          id?: string
+          record_count?: number
+          resource?: string
+          resource_id?: string | null
+        }
+        Relationships: []
+      }
       chat_logs: {
         Row: {
           content: string
