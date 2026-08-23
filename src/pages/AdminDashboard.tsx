@@ -8,12 +8,11 @@ import AdminCharts from '@/components/admin/AdminCharts';
 import AdminInquiries from '@/components/admin/AdminInquiries';
 import AdminOrders from '@/components/admin/AdminOrders';
 import AdminDateFilter, { AdminDateRange, computeRange } from '@/components/admin/AdminDateFilter';
-import AdminTelegramStats from '@/components/admin/AdminTelegramStats';
-import AdminTelegramLeads from '@/components/admin/AdminTelegramLeads';
-import AdminTelegramConversations from '@/components/admin/AdminTelegramConversations';
+import AdminChatbotAnalytics from '@/components/admin/AdminChatbotAnalytics';
+import AdminAuditLog from '@/components/admin/AdminAuditLog';
 
 // ─── Tab Types ────────────────────────────────────────────────────────────────
-type ActiveTab = 'website' | 'telegram';
+type ActiveTab = 'website' | 'chatbot';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -29,19 +28,8 @@ const AdminDashboard = () => {
     return { preset: '7d', from, to };
   });
   const [search, setSearch] = useState('');
-
-  // ── Telegram Tab State ─────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<ActiveTab>('website');
-  const [telegramLeads, setTelegramLeads] = useState<any[]>([]);
-  const [telegramConversations, setTelegramConversations] = useState<any[]>([]);
-  const [telegramMessages, setTelegramMessages] = useState<Record<string, any[]>>({});
-  const [loadingTelegram, setLoadingTelegram] = useState(false);
-  const [telegramStats, setTelegramStats] = useState({
-    totalUsers: 0,
-    activeConversations: 0,
-    newLeads: 0,
-    handoffs: 0,
-  });
+
 
   // ─── Auth Guard ─────────────────────────────────────────────────────────────
   useEffect(() => {
