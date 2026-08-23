@@ -316,72 +316,31 @@ const AdminDashboard = () => {
       )}
 
       {/* ══════════════════════════════════════════════════════════
-          TELEGRAM BOT TAB
+          CHATBOT TAB
       ══════════════════════════════════════════════════════════ */}
-      {activeTab === 'telegram' && (
+      {activeTab === 'chatbot' && (
         <>
-          {loadingTelegram ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="animate-spin text-muted-foreground" size={32} />
+          <AdminDateFilter value={dateRange} onChange={setDateRange} />
+          <section className="mb-10 sm:mb-14">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Chatbot Analytics</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                Conversations, top intents and drop-off points
+              </p>
             </div>
-          ) : (
-            <>
-              {/* Telegram Stats */}
-              <section className="mb-10 sm:mb-14">
-                <div className="mb-4 sm:mb-6">
-                  <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
-                    🤖 Telegram Bot Overview
-                  </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                    Real-time metrics from your Telegram assistant
-                  </p>
-                </div>
-                <AdminTelegramStats stats={telegramStats} />
-              </section>
+            <AdminChatbotAnalytics from={dateRange.from} to={dateRange.to} />
+          </section>
 
-              {/* New Leads */}
-              <section className="mb-10 sm:mb-14">
-                <div className="mb-4 sm:mb-6 flex items-center justify-between">
-                  <div>
-                    <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
-                      Captured Leads
-                    </h2>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                      Requirements collected through the bot's sales flow
-                    </p>
-                  </div>
-                  {telegramStats.newLeads > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/30">
-                      {telegramStats.newLeads} new
-                    </span>
-                  )}
-                </div>
-                <AdminTelegramLeads
-                  leads={telegramLeads}
-                  onStatusUpdate={handleLeadStatusUpdate}
-                />
-              </section>
-
-              {/* Conversation History */}
-              <section>
-                <div className="mb-4 sm:mb-6">
-                  <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
-                    Conversation History
-                  </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                    Click any row to expand the full chat transcript
-                  </p>
-                </div>
-                <AdminTelegramConversations
-                  conversations={telegramConversations}
-                  messages={telegramMessages}
-                  onLoadMessages={loadConversationMessages}
-                />
-              </section>
-            </>
-          )}
+          <section>
+            <div className="mb-4 sm:mb-6">
+              <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Admin Activity Log</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Recent admin actions</p>
+            </div>
+            <AdminAuditLog />
+          </section>
         </>
       )}
+
     </div>
   );
 };
