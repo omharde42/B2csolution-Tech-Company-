@@ -66,69 +66,8 @@ const AdminDashboard = () => {
     fetchData();
   }, [isAdmin]);
 
-  // ─── Fetch Telegram Data ────────────────────────────────────────────────────
-  useEffect(() => {
-    if (!isAdmin || activeTab !== 'telegram') return;
-    const fetchTelegramData = async () => {
-      setLoadingTelegram(true);
-      const sb = supabase as any;
-      const [leadsRes, convsRes, usersRes] = await Promise.all([
-        sb
-          .from('telegram_leads')
-          .select('*')
-          .order('created_at', { ascending: false }),
-        sb
-          .from('telegram_conversations')
-          .select('*, telegram_users(username, first_name, last_name)')
-          .order('updated_at', { ascending: false })
-          .limit(50),
-        sb
-          .from('telegram_users')
-          .select('telegram_id, last_seen'),
-      ]);
 
-      const leads = leadsRes.data || [];
-      const convs = convsRes.data || [];
-      const users = usersRes.data || [];
 
-      setTelegramLeads(leads);
-      setTelegramConversations(convs);
-
-      // Compute stats
-      setTelegramStats({
-        totalUsers: users.length,
-        activeConversations: convs.filter((c: any) => c.status === 'active').length,
-        newLeads: leads.filter((l: any) => l.status === 'new').length,
-        handoffs: convs.filter((c: any) => c.status === 'handed_off').length,
-      });
-
-      setLoadingTelegram(false);
-    };
-    fetchTelegramData();
-  }, [isAdmin, activeTab]);
-
-  // ─── Load Messages for a Conversation ──────────────────────────────────────
-  const loadConversationMessages = async (conversationId: string) => {
-    const { data } = await (supabase as any)
-      .from('telegram_messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
-    setTelegramMessages((prev) => ({ ...prev, [conversationId]: data || [] }));
-  };
-
-  // ─── Lead Status Update ─────────────────────────────────────────────────────
-  const handleLeadStatusUpdate = async (leadId: string, status: string) => {
-    const { error } = await (supabase as any)
-      .from('telegram_leads')
-      .update({ status })
-      .eq('id', leadId);
-    if (!error) {
-      setTelegramLeads((prev) =>
-        prev.map((l) => (l.id === leadId ? { ...l, status } : l))
-      );
-    }
-  };
 
   // ─── Website Tab Helpers ────────────────────────────────────────────────────
   const inRange = (createdAt: string) => {
