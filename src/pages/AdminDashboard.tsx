@@ -8,12 +8,11 @@ import AdminCharts from '@/components/admin/AdminCharts';
 import AdminInquiries from '@/components/admin/AdminInquiries';
 import AdminOrders from '@/components/admin/AdminOrders';
 import AdminDateFilter, { AdminDateRange, computeRange } from '@/components/admin/AdminDateFilter';
-import AdminTelegramStats from '@/components/admin/AdminTelegramStats';
-import AdminTelegramLeads from '@/components/admin/AdminTelegramLeads';
-import AdminTelegramConversations from '@/components/admin/AdminTelegramConversations';
+import AdminChatbotAnalytics from '@/components/admin/AdminChatbotAnalytics';
+import AdminAuditLog from '@/components/admin/AdminAuditLog';
 
 // ─── Tab Types ────────────────────────────────────────────────────────────────
-type ActiveTab = 'website' | 'telegram';
+type ActiveTab = 'website' | 'chatbot';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -29,19 +28,8 @@ const AdminDashboard = () => {
     return { preset: '7d', from, to };
   });
   const [search, setSearch] = useState('');
-
-  // ── Telegram Tab State ─────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<ActiveTab>('website');
-  const [telegramLeads, setTelegramLeads] = useState<any[]>([]);
-  const [telegramConversations, setTelegramConversations] = useState<any[]>([]);
-  const [telegramMessages, setTelegramMessages] = useState<Record<string, any[]>>({});
-  const [loadingTelegram, setLoadingTelegram] = useState(false);
-  const [telegramStats, setTelegramStats] = useState({
-    totalUsers: 0,
-    activeConversations: 0,
-    newLeads: 0,
-    handoffs: 0,
-  });
+
 
   // ─── Auth Guard ─────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -66,69 +54,8 @@ const AdminDashboard = () => {
     fetchData();
   }, [isAdmin]);
 
-  // ─── Fetch Telegram Data ────────────────────────────────────────────────────
-  useEffect(() => {
-    if (!isAdmin || activeTab !== 'telegram') return;
-    const fetchTelegramData = async () => {
-      setLoadingTelegram(true);
-      const sb = supabase as any;
-      const [leadsRes, convsRes, usersRes] = await Promise.all([
-        sb
-          .from('telegram_leads')
-          .select('*')
-          .order('created_at', { ascending: false }),
-        sb
-          .from('telegram_conversations')
-          .select('*, telegram_users(username, first_name, last_name)')
-          .order('updated_at', { ascending: false })
-          .limit(50),
-        sb
-          .from('telegram_users')
-          .select('telegram_id, last_seen'),
-      ]);
 
-      const leads = leadsRes.data || [];
-      const convs = convsRes.data || [];
-      const users = usersRes.data || [];
 
-      setTelegramLeads(leads);
-      setTelegramConversations(convs);
-
-      // Compute stats
-      setTelegramStats({
-        totalUsers: users.length,
-        activeConversations: convs.filter((c: any) => c.status === 'active').length,
-        newLeads: leads.filter((l: any) => l.status === 'new').length,
-        handoffs: convs.filter((c: any) => c.status === 'handed_off').length,
-      });
-
-      setLoadingTelegram(false);
-    };
-    fetchTelegramData();
-  }, [isAdmin, activeTab]);
-
-  // ─── Load Messages for a Conversation ──────────────────────────────────────
-  const loadConversationMessages = async (conversationId: string) => {
-    const { data } = await (supabase as any)
-      .from('telegram_messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
-    setTelegramMessages((prev) => ({ ...prev, [conversationId]: data || [] }));
-  };
-
-  // ─── Lead Status Update ─────────────────────────────────────────────────────
-  const handleLeadStatusUpdate = async (leadId: string, status: string) => {
-    const { error } = await (supabase as any)
-      .from('telegram_leads')
-      .update({ status })
-      .eq('id', leadId);
-    if (!error) {
-      setTelegramLeads((prev) =>
-        prev.map((l) => (l.id === leadId ? { ...l, status } : l))
-      );
-    }
-  };
 
   // ─── Website Tab Helpers ────────────────────────────────────────────────────
   const inRange = (createdAt: string) => {
@@ -217,21 +144,17 @@ const AdminDashboard = () => {
           Website
         </button>
         <button
-          onClick={() => setActiveTab('telegram')}
+          onClick={() => setActiveTab('chatbot')}
           className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
-            activeTab === 'telegram'
+            activeTab === 'chatbot'
               ? 'bg-primary text-primary-foreground shadow-md'
               : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
           }`}
         >
           <Bot size={15} />
-          Telegram Bot
-          {telegramStats.newLeads > 0 && (
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold text-accent-foreground">
-              {telegramStats.newLeads}
-            </span>
-          )}
+          Chatbot
         </button>
+
       </div>
 
       {/* ══════════════════════════════════════════════════════════
@@ -316,72 +239,31 @@ const AdminDashboard = () => {
       )}
 
       {/* ══════════════════════════════════════════════════════════
-          TELEGRAM BOT TAB
+          CHATBOT TAB
       ══════════════════════════════════════════════════════════ */}
-      {activeTab === 'telegram' && (
+      {activeTab === 'chatbot' && (
         <>
-          {loadingTelegram ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="animate-spin text-muted-foreground" size={32} />
+          <AdminDateFilter value={dateRange} onChange={setDateRange} />
+          <section className="mb-10 sm:mb-14">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Chatbot Analytics</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                Conversations, top intents and drop-off points
+              </p>
             </div>
-          ) : (
-            <>
-              {/* Telegram Stats */}
-              <section className="mb-10 sm:mb-14">
-                <div className="mb-4 sm:mb-6">
-                  <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
-                    🤖 Telegram Bot Overview
-                  </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                    Real-time metrics from your Telegram assistant
-                  </p>
-                </div>
-                <AdminTelegramStats stats={telegramStats} />
-              </section>
+            <AdminChatbotAnalytics from={dateRange.from} to={dateRange.to} />
+          </section>
 
-              {/* New Leads */}
-              <section className="mb-10 sm:mb-14">
-                <div className="mb-4 sm:mb-6 flex items-center justify-between">
-                  <div>
-                    <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
-                      Captured Leads
-                    </h2>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                      Requirements collected through the bot's sales flow
-                    </p>
-                  </div>
-                  {telegramStats.newLeads > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/30">
-                      {telegramStats.newLeads} new
-                    </span>
-                  )}
-                </div>
-                <AdminTelegramLeads
-                  leads={telegramLeads}
-                  onStatusUpdate={handleLeadStatusUpdate}
-                />
-              </section>
-
-              {/* Conversation History */}
-              <section>
-                <div className="mb-4 sm:mb-6">
-                  <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
-                    Conversation History
-                  </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                    Click any row to expand the full chat transcript
-                  </p>
-                </div>
-                <AdminTelegramConversations
-                  conversations={telegramConversations}
-                  messages={telegramMessages}
-                  onLoadMessages={loadConversationMessages}
-                />
-              </section>
-            </>
-          )}
+          <section>
+            <div className="mb-4 sm:mb-6">
+              <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">Admin Activity Log</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Recent admin actions</p>
+            </div>
+            <AdminAuditLog />
+          </section>
         </>
       )}
+
     </div>
   );
 };
