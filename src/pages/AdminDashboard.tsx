@@ -217,21 +217,17 @@ const AdminDashboard = () => {
           Website
         </button>
         <button
-          onClick={() => setActiveTab('telegram')}
+          onClick={() => setActiveTab('chatbot')}
           className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
-            activeTab === 'telegram'
+            activeTab === 'chatbot'
               ? 'bg-primary text-primary-foreground shadow-md'
               : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
           }`}
         >
           <Bot size={15} />
-          Telegram Bot
-          {telegramStats.newLeads > 0 && (
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold text-accent-foreground">
-              {telegramStats.newLeads}
-            </span>
-          )}
+          Chatbot
         </button>
+
       </div>
 
       {/* ══════════════════════════════════════════════════════════
