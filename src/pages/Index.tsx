@@ -35,7 +35,7 @@ const Index = () => {
     <div>
       <SEO
         title="B2C Solution — Websites, AI Tools & Digital Services"
-        description="Affordable websites, AI tools & automation for small businesses. AI Website from ₹3500. Fast delivery, WhatsApp setup, unlimited revisions."
+        description="Affordable websites, AI tools & automation for small businesses. AI Website from ₹5500. Fast delivery, WhatsApp setup, unlimited revisions."
         path="/"
         jsonLd={faqSchema}
       />

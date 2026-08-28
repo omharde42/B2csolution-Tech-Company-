@@ -85,7 +85,13 @@ const Dashboard = () => {
           })}
         </div>
       )}
+
+      <div className="mt-12 space-y-10">
+        <SupportTickets />
+        <ChatHistoryExport />
+      </div>
     </div>
+
   );
 };
 

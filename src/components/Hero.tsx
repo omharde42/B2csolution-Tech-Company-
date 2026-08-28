@@ -79,7 +79,7 @@ const Hero = () => (
       </div>
       <div>
         <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-display font-bold">From</div>
-        <div className="text-xs font-semibold">₹3,500</div>
+        <div className="text-xs font-semibold">₹5,500</div>
       </div>
     </motion.div>
 
@@ -129,7 +129,7 @@ const Hero = () => (
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
           {[
             { icon: Zap, label: 'Ready in 2–3 days' },
-            { icon: IndianRupee, label: 'AI Website from ₹3,500' },
+            { icon: IndianRupee, label: 'AI Website from ₹5,500' },
             { icon: Smile, label: 'Made for small business' },
           ].map((b) => (
             <div key={b.label} className="flex items-center gap-2 text-xs text-muted-foreground">
