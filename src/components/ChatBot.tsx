@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, Loader2, Sparkles, MessageCircle, ExternalLink } from 'lucide-react';
+import { Bot, X, Send, Loader2, Sparkles, MessageCircle, ExternalLink, LifeBuoy, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useCart } from '@/hooks/useCart';
+import { toast } from '@/hooks/use-toast';
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const MAX_QUESTIONS = 25;
@@ -11,6 +15,7 @@ const WA_URL =
   'https://api.whatsapp.com/send?phone=919882303030&text=' +
   encodeURIComponent('Hi B2C Solution! I have some questions. Can you help me?');
 const TG_URL = 'https://t.me/b2csolution_bot'; // Update with your actual bot username
+
 
 interface Message {
   role: 'user' | 'assistant';
