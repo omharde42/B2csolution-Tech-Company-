@@ -40,6 +40,21 @@ const INITIAL_MSG: Message = {
 // ── Session Storage Keys ──────────────────────────────────────────────────────
 const STORAGE_KEY = 'b2c_chat_history';
 const COUNT_KEY = 'b2c_chat_count';
+const SESSION_KEY_KEY = 'b2c_chat_session_key';
+
+const getSessionKey = (): string => {
+  try {
+    let k = sessionStorage.getItem(SESSION_KEY_KEY);
+    if (!k) {
+      k = (crypto.randomUUID?.() ?? `s-${Date.now()}-${Math.random().toString(36).slice(2)}`).slice(0, 64);
+      sessionStorage.setItem(SESSION_KEY_KEY, k);
+    }
+    return k;
+  } catch {
+    return `s-${Date.now()}`;
+  }
+};
+
 
 const loadHistory = (): Message[] => {
   try {
