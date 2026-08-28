@@ -563,19 +563,33 @@ const ChatBot = () => {
                   {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                 </button>
               </div>
-              <div className="mt-1.5 flex items-center justify-between px-1">
-                <p className="text-[10px] text-muted-foreground">
-                  Powered by AI · {Math.max(0, MAX_QUESTIONS - questionCount)} questions left
-                </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5 px-1">
+                <button
+                  onClick={createTicketFromChat}
+                  disabled={creatingTicket}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2 py-1 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground disabled:opacity-50"
+                >
+                  {creatingTicket ? <Loader2 size={10} className="animate-spin" /> : <LifeBuoy size={10} />} Create support ticket
+                </button>
+                <button
+                  onClick={exportChat}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2 py-1 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                >
+                  <Download size={10} /> Export chat
+                </button>
                 <a
-                  href={WA_URL}
+                  href={handoffUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#25D366] hover:underline"
+                  className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-[#25D366] hover:underline"
                 >
                   <MessageCircle size={10} /> Human <ExternalLink size={8} />
                 </a>
               </div>
+              <p className="px-1 pt-1 text-[10px] text-muted-foreground">
+                Powered by AI · {Math.max(0, MAX_QUESTIONS - questionCount)} questions left
+              </p>
+
             </div>
           </motion.div>
         )}
