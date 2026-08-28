@@ -87,6 +87,80 @@ const ChatBot = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [honeypot, setHoneypot] = useState('');
+  const sessionKeyRef = useRef<string>(getSessionKey());
+  const { user, setShowAuth } = useAuth();
+  const { orders } = useCart();
+  const [creatingTicket, setCreatingTicket] = useState(false);
+
+  // ── Recent conversation summary (for handoff / tickets) ──────────────────
+  const recentTranscript = (limit = 6) =>
+    messages
+      .filter((m) => m.content.trim())
+      .slice(-limit)
+      .map((m) => `${m.role === 'user' ? 'Me' : 'Bot'}: ${m.content.replace(/\s+/g, ' ').slice(0, 220)}`)
+      .join('\n');
+
+  const orderSummary = () => {
+    const recent = (orders || []).slice(0, 3);
+    if (recent.length === 0) return 'No orders on my account yet.';
+    return recent
+      .map((o: any) => `#${o.id} — ${o.status} — ₹${Number(o.total).toLocaleString()}`)
+      .join('\n');
+  };
+
+  const handoffUrl = () => {
+    const text = [
+      'Hi B2C Solution! I was chatting with B2C Bot and would like to talk to a human.',
+      user ? `\nName: ${user.name}\nEmail: ${user.email}` : '',
+      `\nRecent chat:\n${recentTranscript() || '(no messages yet)'}`,
+      `\nMy orders:\n${orderSummary()}`,
+    ].join('');
+    return `https://api.whatsapp.com/send?phone=919882303030&text=${encodeURIComponent(text.slice(0, 1800))}`;
+  };
+
+  // ── Create a support ticket from the conversation ────────────────────────
+  const createTicketFromChat = async () => {
+    if (!user) {
+      setShowAuth(true);
+      return;
+    }
+    setCreatingTicket(true);
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')?.content ?? 'Support request from chat';
+    const { error } = await supabase.from('support_tickets').insert({
+      user_id: user.id,
+      subject: lastUserMsg.replace(/\s+/g, ' ').slice(0, 80),
+      description: `Created from B2C Bot chat.\n\nRecent conversation:\n${recentTranscript(10)}\n\nOrders:\n${orderSummary()}`,
+      category: 'general',
+      priority: 'normal',
+    });
+    setCreatingTicket(false);
+    if (error) {
+      toast({ title: 'Could not create ticket', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Support ticket created', description: 'Track it in your dashboard under Support Tickets.' });
+    setMessages((prev) => [
+      ...prev,
+      { role: 'assistant', content: '✅ Your support ticket has been created. You can view and reply to it in your [dashboard](/dashboard).' },
+    ]);
+  };
+
+  // ── Export this chat ─────────────────────────────────────────────────────
+  const exportChat = () => {
+    const body = messages
+      .map((m) => `${m.role === 'user' ? 'You' : 'B2C Bot'}: ${m.content}`)
+      .join('\n\n');
+    const blob = new Blob([`B2C Solution — Chat transcript\n${new Date().toLocaleString()}\n\n${body}`], {
+      type: 'text/plain;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `b2c-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 
   // ── Auto-scroll ──────────────────────────────────────────────────────────
   useEffect(() => {
