@@ -486,7 +486,7 @@ const ChatBot = () => {
                   </p>
                   <div className="flex gap-2">
                     <a
-                      href={WA_URL}
+                      href={handoffUrl()}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 py-1.5 text-[11px] font-semibold hover:bg-[#25D366]/20 transition-colors"
@@ -502,12 +502,16 @@ const ChatBot = () => {
                       📱 Telegram Bot
                     </a>
                   </div>
+                  <p className="mt-1.5 text-[10px] text-muted-foreground">
+                    Your recent messages and order details are included automatically.
+                  </p>
                   <button
                     onClick={() => setShowHandoff(false)}
                     className="mt-1.5 w-full text-[10px] text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Continue with AI
                   </button>
+
                 </motion.div>
               )}
             </div>
