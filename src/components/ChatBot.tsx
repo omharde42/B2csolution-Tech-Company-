@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, Loader2, Sparkles, MessageCircle, ExternalLink } from 'lucide-react';
+import { Bot, X, Send, Loader2, Sparkles, MessageCircle, ExternalLink, LifeBuoy, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useCart } from '@/hooks/useCart';
+import { toast } from '@/hooks/use-toast';
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const MAX_QUESTIONS = 25;
@@ -11,6 +15,7 @@ const WA_URL =
   'https://api.whatsapp.com/send?phone=919882303030&text=' +
   encodeURIComponent('Hi B2C Solution! I have some questions. Can you help me?');
 const TG_URL = 'https://t.me/b2csolution_bot'; // Update with your actual bot username
+
 
 interface Message {
   role: 'user' | 'assistant';
@@ -35,6 +40,21 @@ const INITIAL_MSG: Message = {
 // ── Session Storage Keys ──────────────────────────────────────────────────────
 const STORAGE_KEY = 'b2c_chat_history';
 const COUNT_KEY = 'b2c_chat_count';
+const SESSION_KEY_KEY = 'b2c_chat_session_key';
+
+const getSessionKey = (): string => {
+  try {
+    let k = sessionStorage.getItem(SESSION_KEY_KEY);
+    if (!k) {
+      k = (crypto.randomUUID?.() ?? `s-${Date.now()}-${Math.random().toString(36).slice(2)}`).slice(0, 64);
+      sessionStorage.setItem(SESSION_KEY_KEY, k);
+    }
+    return k;
+  } catch {
+    return `s-${Date.now()}`;
+  }
+};
+
 
 const loadHistory = (): Message[] => {
   try {
@@ -67,6 +87,80 @@ const ChatBot = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [honeypot, setHoneypot] = useState('');
+  const sessionKeyRef = useRef<string>(getSessionKey());
+  const { user, setShowAuth } = useAuth();
+  const { orders } = useCart();
+  const [creatingTicket, setCreatingTicket] = useState(false);
+
+  // ── Recent conversation summary (for handoff / tickets) ──────────────────
+  const recentTranscript = (limit = 6) =>
+    messages
+      .filter((m) => m.content.trim())
+      .slice(-limit)
+      .map((m) => `${m.role === 'user' ? 'Me' : 'Bot'}: ${m.content.replace(/\s+/g, ' ').slice(0, 220)}`)
+      .join('\n');
+
+  const orderSummary = () => {
+    const recent = (orders || []).slice(0, 3);
+    if (recent.length === 0) return 'No orders on my account yet.';
+    return recent
+      .map((o: any) => `#${o.id} — ${o.status} — ₹${Number(o.total).toLocaleString()}`)
+      .join('\n');
+  };
+
+  const handoffUrl = () => {
+    const text = [
+      'Hi B2C Solution! I was chatting with B2C Bot and would like to talk to a human.',
+      user ? `\nName: ${user.name}\nEmail: ${user.email}` : '',
+      `\nRecent chat:\n${recentTranscript() || '(no messages yet)'}`,
+      `\nMy orders:\n${orderSummary()}`,
+    ].join('');
+    return `https://api.whatsapp.com/send?phone=919882303030&text=${encodeURIComponent(text.slice(0, 1800))}`;
+  };
+
+  // ── Create a support ticket from the conversation ────────────────────────
+  const createTicketFromChat = async () => {
+    if (!user) {
+      setShowAuth(true);
+      return;
+    }
+    setCreatingTicket(true);
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')?.content ?? 'Support request from chat';
+    const { error } = await supabase.from('support_tickets').insert({
+      user_id: user.id,
+      subject: lastUserMsg.replace(/\s+/g, ' ').slice(0, 80),
+      description: `Created from B2C Bot chat.\n\nRecent conversation:\n${recentTranscript(10)}\n\nOrders:\n${orderSummary()}`,
+      category: 'general',
+      priority: 'normal',
+    });
+    setCreatingTicket(false);
+    if (error) {
+      toast({ title: 'Could not create ticket', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Support ticket created', description: 'Track it in your dashboard under Support Tickets.' });
+    setMessages((prev) => [
+      ...prev,
+      { role: 'assistant', content: '✅ Your support ticket has been created. You can view and reply to it in your [dashboard](/dashboard).' },
+    ]);
+  };
+
+  // ── Export this chat ─────────────────────────────────────────────────────
+  const exportChat = () => {
+    const body = messages
+      .map((m) => `${m.role === 'user' ? 'You' : 'B2C Bot'}: ${m.content}`)
+      .join('\n\n');
+    const blob = new Blob([`B2C Solution — Chat transcript\n${new Date().toLocaleString()}\n\n${body}`], {
+      type: 'text/plain;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `b2c-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 
   // ── Auto-scroll ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -142,13 +236,17 @@ const ChatBot = () => {
     let assistantContent = '';
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${accessToken ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
-        body: JSON.stringify({ messages: updatedMessages }),
+        body: JSON.stringify({ messages: updatedMessages, sessionKey: sessionKeyRef.current }),
+
       });
 
       if (resp.status === 429) {
@@ -388,7 +486,7 @@ const ChatBot = () => {
                   </p>
                   <div className="flex gap-2">
                     <a
-                      href={WA_URL}
+                      href={handoffUrl()}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 py-1.5 text-[11px] font-semibold hover:bg-[#25D366]/20 transition-colors"
@@ -404,12 +502,16 @@ const ChatBot = () => {
                       📱 Telegram Bot
                     </a>
                   </div>
+                  <p className="mt-1.5 text-[10px] text-muted-foreground">
+                    Your recent messages and order details are included automatically.
+                  </p>
                   <button
                     onClick={() => setShowHandoff(false)}
                     className="mt-1.5 w-full text-[10px] text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Continue with AI
                   </button>
+
                 </motion.div>
               )}
             </div>
@@ -461,19 +563,33 @@ const ChatBot = () => {
                   {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                 </button>
               </div>
-              <div className="mt-1.5 flex items-center justify-between px-1">
-                <p className="text-[10px] text-muted-foreground">
-                  Powered by AI · {Math.max(0, MAX_QUESTIONS - questionCount)} questions left
-                </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5 px-1">
+                <button
+                  onClick={createTicketFromChat}
+                  disabled={creatingTicket}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2 py-1 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground disabled:opacity-50"
+                >
+                  {creatingTicket ? <Loader2 size={10} className="animate-spin" /> : <LifeBuoy size={10} />} Create support ticket
+                </button>
+                <button
+                  onClick={exportChat}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2 py-1 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                >
+                  <Download size={10} /> Export chat
+                </button>
                 <a
-                  href={WA_URL}
+                  href={handoffUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#25D366] hover:underline"
+                  className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-[#25D366] hover:underline"
                 >
                   <MessageCircle size={10} /> Human <ExternalLink size={8} />
                 </a>
               </div>
+              <p className="px-1 pt-1 text-[10px] text-muted-foreground">
+                Powered by AI · {Math.max(0, MAX_QUESTIONS - questionCount)} questions left
+              </p>
+
             </div>
           </motion.div>
         )}

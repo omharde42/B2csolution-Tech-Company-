@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Phone, Mail, Clock, MessageCircle, ShieldCheck, Zap, Heart } from 'lucide-react';
+import { Instagram, Phone, Mail, Clock, MessageCircle, ShieldCheck, Zap, Heart, Github, FileText } from 'lucide-react';
 import b2cLogo from '@/assets/b2csolution-logo.png';
 
 const Footer = () => (
@@ -56,6 +56,23 @@ const Footer = () => (
             <li><Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
             <li><Link to="/community" className="hover:text-accent transition-colors">Join Community</Link></li>
           </ul>
+          <div className="mt-4 rounded-xl border border-border bg-background/40 p-3">
+            <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <FileText size={13} className="text-primary" /> Legal Documents
+            </p>
+            <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+              Official legal docs, Terms &amp; Conditions and policies of B2C Solution — publicly viewable.
+            </p>
+            <a
+              href="https://github.com/B2CSOLUTION-TECH-COMPANY/B2CSolution-Legal"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-semibold text-primary hover:underline"
+            >
+              <Github size={12} /> View Terms &amp; Legal Docs
+            </a>
+          </div>
+
         </div>
 
         <div>

@@ -3,7 +3,7 @@ import { Zap, IndianRupee, ShieldCheck, Sparkles, MessageCircle, RefreshCw } fro
 
 const reasons = [
   { icon: Zap, title: 'Fast 2–3 day delivery', desc: 'Most websites go live within 72 hours of payment confirmation.' },
-  { icon: IndianRupee, title: 'Transparent pricing', desc: 'Starts at ₹3,500. No hidden fees, no surprise renewals.' },
+  { icon: IndianRupee, title: 'Transparent pricing', desc: 'Starts at ₹5,500. No hidden fees, no surprise renewals.' },
   { icon: ShieldCheck, title: 'Secure UPI payments', desc: 'Pay via verified UPI IDs with screenshot-based order verification.' },
   { icon: Sparkles, title: 'Modern, mobile-first design', desc: 'Pixel-perfect on phone, tablet and desktop — built with React.' },
   { icon: MessageCircle, title: 'Direct WhatsApp support', desc: 'Talk to the founder directly on +91 98823 03030. No call centres.' },
