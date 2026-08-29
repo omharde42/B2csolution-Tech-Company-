@@ -187,6 +187,51 @@ export type Database = {
         }
         Relationships: []
       }
+      news_posts: {
+        Row: {
+          badge: string
+          content: string
+          created_at: string
+          created_by: string | null
+          date_label: string
+          excerpt: string
+          id: string
+          published: boolean
+          slug: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          date_label?: string
+          excerpt?: string
+          id?: string
+          published?: boolean
+          slug: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          date_label?: string
+          excerpt?: string
+          id?: string
+          published?: boolean
+          slug?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string
