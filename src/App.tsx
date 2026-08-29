@@ -19,6 +19,7 @@ import Dashboard from "./pages/Dashboard";
 import OrderTracking from "./pages/OrderTracking";
 import ServicesPage from "./pages/ServicesPage";
 import ReviewsPage from "./pages/ReviewsPage";
+import NewsPage from "./pages/NewsPage";
 import ContactPage from "./pages/ContactPage";
 import TeamPage from "./pages/TeamPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -45,6 +46,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/reviews" element={<ReviewsPage />} />
+                <Route path="/news" element={<NewsPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/team" element={<TeamPage />} />
                 <Route path="/checkout" element={<Checkout />} />
