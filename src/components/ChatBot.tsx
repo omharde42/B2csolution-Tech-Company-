@@ -1,50 +1,173 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, Loader2, Sparkles, MessageCircle, ExternalLink } from 'lucide-react';
+import { Bot, X, Send, Loader2, Sparkles, MessageCircle, ExternalLink, LifeBuoy, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useCart } from '@/hooks/useCart';
+import { toast } from '@/hooks/use-toast';
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
-const MAX_QUESTIONS = 15;
+const MAX_QUESTIONS = 25;
 const RATE_LIMIT_MS = 1500;
 const WA_URL =
   'https://api.whatsapp.com/send?phone=919882303030&text=' +
   encodeURIComponent('Hi B2C Solution! I have some questions. Can you help me?');
+const TG_URL = 'https://t.me/b2csolution_bot'; // Update with your actual bot username
+
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
+// ── Quick Prompts ────────────────────────────────────────────────────────────
 const QUICK_PROMPTS = [
-  'What websites do you build?',
-  'Track my order',
-  'Pricing for AI website',
-  'Talk to a human',
+  '🌐 Website development',
+  '🤖 AI chatbot for my business',
+  '📱 Mobile app cost?',
+  '💬 Talk to a human',
 ];
 
+// ── Initial Message ───────────────────────────────────────────────────────────
 const INITIAL_MSG: Message = {
   role: 'assistant',
   content:
-    "👋 Hi! I'm **B2C Bot** — your AI assistant.\n\nI can help with:\n- 💼 Services & pricing\n- 📦 Order tracking & support\n- 🛠️ Tech troubleshooting\n- 💳 Checkout & payment\n\nWhat would you like to know?",
+    "👋 Hi! I'm **B2C Bot** — your AI business assistant.\n\nI can help you with:\n- 💼 Services & pricing\n- 🌐 Website & app development\n- 🤖 AI chatbots & automation\n- 📦 Order tracking & support\n\nWhat would you like to know?",
 };
+
+// ── Session Storage Keys ──────────────────────────────────────────────────────
+const STORAGE_KEY = 'b2c_chat_history';
+const COUNT_KEY = 'b2c_chat_count';
+const SESSION_KEY_KEY = 'b2c_chat_session_key';
+
+const getSessionKey = (): string => {
+  try {
+    let k = sessionStorage.getItem(SESSION_KEY_KEY);
+    if (!k) {
+      k = (crypto.randomUUID?.() ?? `s-${Date.now()}-${Math.random().toString(36).slice(2)}`).slice(0, 64);
+      sessionStorage.setItem(SESSION_KEY_KEY, k);
+    }
+    return k;
+  } catch {
+    return `s-${Date.now()}`;
+  }
+};
+
+
+const loadHistory = (): Message[] => {
+  try {
+    const stored = sessionStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [INITIAL_MSG];
+  } catch {
+    return [INITIAL_MSG];
+  }
+};
+
+const loadCount = (): number => {
+  try {
+    return parseInt(sessionStorage.getItem(COUNT_KEY) ?? '0', 10);
+  } catch {
+    return 0;
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 const ChatBot = () => {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MSG]);
+  const [messages, setMessages] = useState<Message[]>(loadHistory);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [questionCount, setQuestionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(loadCount);
   const [lastSentAt, setLastSentAt] = useState(0);
   const [unread, setUnread] = useState(false);
+  const [showHandoff, setShowHandoff] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [honeypot, setHoneypot] = useState('');
+  const sessionKeyRef = useRef<string>(getSessionKey());
+  const { user, setShowAuth } = useAuth();
+  const { orders } = useCart();
+  const [creatingTicket, setCreatingTicket] = useState(false);
 
+  // ── Recent conversation summary (for handoff / tickets) ──────────────────
+  const recentTranscript = (limit = 6) =>
+    messages
+      .filter((m) => m.content.trim())
+      .slice(-limit)
+      .map((m) => `${m.role === 'user' ? 'Me' : 'Bot'}: ${m.content.replace(/\s+/g, ' ').slice(0, 220)}`)
+      .join('\n');
+
+  const orderSummary = () => {
+    const recent = (orders || []).slice(0, 3);
+    if (recent.length === 0) return 'No orders on my account yet.';
+    return recent
+      .map((o: any) => `#${o.id} — ${o.status} — ₹${Number(o.total).toLocaleString()}`)
+      .join('\n');
+  };
+
+  const handoffUrl = () => {
+    const text = [
+      'Hi B2C Solution! I was chatting with B2C Bot and would like to talk to a human.',
+      user ? `\nName: ${user.name}\nEmail: ${user.email}` : '',
+      `\nRecent chat:\n${recentTranscript() || '(no messages yet)'}`,
+      `\nMy orders:\n${orderSummary()}`,
+    ].join('');
+    return `https://api.whatsapp.com/send?phone=919882303030&text=${encodeURIComponent(text.slice(0, 1800))}`;
+  };
+
+  // ── Create a support ticket from the conversation ────────────────────────
+  const createTicketFromChat = async () => {
+    if (!user) {
+      setShowAuth(true);
+      return;
+    }
+    setCreatingTicket(true);
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')?.content ?? 'Support request from chat';
+    const { error } = await supabase.from('support_tickets').insert({
+      user_id: user.id,
+      subject: lastUserMsg.replace(/\s+/g, ' ').slice(0, 80),
+      description: `Created from B2C Bot chat.\n\nRecent conversation:\n${recentTranscript(10)}\n\nOrders:\n${orderSummary()}`,
+      category: 'general',
+      priority: 'normal',
+    });
+    setCreatingTicket(false);
+    if (error) {
+      toast({ title: 'Could not create ticket', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Support ticket created', description: 'Track it in your dashboard under Support Tickets.' });
+    setMessages((prev) => [
+      ...prev,
+      { role: 'assistant', content: '✅ Your support ticket has been created. You can view and reply to it in your [dashboard](/dashboard).' },
+    ]);
+  };
+
+  // ── Export this chat ─────────────────────────────────────────────────────
+  const exportChat = () => {
+    const body = messages
+      .map((m) => `${m.role === 'user' ? 'You' : 'B2C Bot'}: ${m.content}`)
+      .join('\n\n');
+    const blob = new Blob([`B2C Solution — Chat transcript\n${new Date().toLocaleString()}\n\n${body}`], {
+      type: 'text/plain;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `b2c-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+
+  // ── Auto-scroll ──────────────────────────────────────────────────────────
   useEffect(() => {
     scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
   }, [messages]);
 
+  // ── Focus on open ────────────────────────────────────────────────────────
   useEffect(() => {
     if (open) {
       setUnread(false);
@@ -52,7 +175,7 @@ const ChatBot = () => {
     }
   }, [open]);
 
-  // gentle nudge after 8s on first visit
+  // ── Gentle nudge after 8s ────────────────────────────────────────────────
   useEffect(() => {
     const t = setTimeout(() => {
       if (!open && messages.length === 1) setUnread(true);
@@ -60,9 +183,27 @@ const ChatBot = () => {
     return () => clearTimeout(t);
   }, [open, messages.length]);
 
+  // ── Persist to sessionStorage ────────────────────────────────────────────
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    sessionStorage.setItem(COUNT_KEY, String(questionCount));
+  }, [questionCount]);
+
+  // ── Show handoff panel at threshold ─────────────────────────────────────
+  useEffect(() => {
+    if (questionCount >= 20 && !showHandoff) {
+      setShowHandoff(true);
+    }
+  }, [questionCount, showHandoff]);
+
+  // ─────────────────────────────────────────────────────────────────────────
+
   const sendText = async (text: string) => {
     if (!text.trim() || isLoading) return;
-    if (honeypot) return;
+    if (honeypot) return; // Anti-spam honeypot
 
     const now = Date.now();
     if (now - lastSentAt < RATE_LIMIT_MS) return;
@@ -74,17 +215,17 @@ const ChatBot = () => {
     const newCount = questionCount + 1;
     setQuestionCount(newCount);
 
-    if (newCount >= MAX_QUESTIONS) {
+    // Hard cap
+    if (newCount > MAX_QUESTIONS) {
       setMessages((prev) => [
         ...prev,
         { role: 'user', content: userMsg },
         {
           role: 'assistant',
           content:
-            "You've been chatting a lot! 🤔 Let me connect you with our team on WhatsApp for personalised help.",
+            "You've been very thorough! 🙌 Let me connect you with our team for personalised help.\n\n[💬 Chat on WhatsApp](https://wa.me/919882303030) · [🤖 Telegram Bot](" + TG_URL + ")",
         },
       ]);
-      setTimeout(() => window.open(WA_URL, '_blank'), 1500);
       return;
     }
 
@@ -95,13 +236,17 @@ const ChatBot = () => {
     let assistantContent = '';
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${accessToken ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
-        body: JSON.stringify({ messages: updatedMessages }),
+        body: JSON.stringify({ messages: updatedMessages, sessionKey: sessionKeyRef.current }),
+
       });
 
       if (resp.status === 429) {
@@ -114,7 +259,7 @@ const ChatBot = () => {
       if (resp.status === 402) {
         setMessages((prev) => [
           ...prev,
-          { role: 'assistant', content: 'AI is temporarily unavailable. Please reach us on WhatsApp at **+91 98823 03030**.' },
+          { role: 'assistant', content: 'AI is temporarily unavailable. Please reach us on **[WhatsApp](https://wa.me/919882303030)** or **+91 98823 03030**.' },
         ]);
         return;
       }
@@ -164,7 +309,7 @@ const ChatBot = () => {
         ...prev,
         {
           role: 'assistant',
-          content: "Sorry, I couldn't process that. Please try again or reach us on WhatsApp at **+91 98823 03030**.",
+          content: "Sorry, I couldn't process that. Please try again or reach us on **[WhatsApp](https://wa.me/919882303030)** at **+91 98823 03030**.",
         },
       ]);
     } finally {
@@ -173,22 +318,26 @@ const ChatBot = () => {
   };
 
   const send = () => sendText(input);
+
   const handleQuick = (q: string) => {
     if (q.toLowerCase().includes('human')) {
-      window.open(WA_URL, '_blank');
+      setShowHandoff(true);
       return;
     }
-    sendText(q);
+    sendText(q.replace(/^[🌐🤖📱💬]\s/, ''));
   };
 
   const reset = () => {
     setMessages([INITIAL_MSG]);
     setQuestionCount(0);
+    setShowHandoff(false);
+    sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(COUNT_KEY);
   };
 
   return (
     <>
-      {/* Floating launcher */}
+      {/* ── Floating Launcher ── */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-24 right-4 sm:right-6 z-50 group"
@@ -214,6 +363,7 @@ const ChatBot = () => {
         )}
       </button>
 
+      {/* ── Chat Window ── */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -221,7 +371,7 @@ const ChatBot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: 'spring', damping: 22, stiffness: 280 }}
-            className="fixed bottom-40 right-4 sm:right-6 z-50 flex h-[34rem] max-h-[80vh] w-[calc(100vw-2rem)] sm:w-[24rem] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+            className="fixed bottom-40 right-4 sm:right-6 z-50 flex h-[36rem] max-h-[82vh] w-[calc(100vw-2rem)] sm:w-[24rem] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
             role="dialog"
             aria-label="B2C AI Bot chat"
           >
@@ -238,16 +388,28 @@ const ChatBot = () => {
                     <h3 className="font-display text-sm font-bold text-primary-foreground flex items-center gap-1">
                       B2C Bot <Sparkles size={12} className="text-primary-foreground/80" />
                     </h3>
-                    <p className="text-[10px] text-primary-foreground/80">Online · Usually replies instantly</p>
+                    <p className="text-[10px] text-primary-foreground/80">Online · Replies instantly</p>
                   </div>
                 </div>
-                <button
-                  onClick={reset}
-                  className="text-[10px] font-semibold text-primary-foreground/80 hover:text-primary-foreground underline-offset-2 hover:underline"
-                  aria-label="Start new chat"
-                >
-                  New chat
-                </button>
+                <div className="flex items-center gap-2">
+                  {/* Telegram Bot Link */}
+                  <a
+                    href={TG_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open Telegram Bot"
+                    className="flex items-center gap-1 text-[10px] font-semibold text-primary-foreground/80 hover:text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 px-2 py-1 rounded-md transition-colors"
+                  >
+                    📱 Telegram
+                  </a>
+                  <button
+                    onClick={reset}
+                    className="text-[10px] font-semibold text-primary-foreground/80 hover:text-primary-foreground underline-offset-2 hover:underline"
+                    aria-label="Start new chat"
+                  >
+                    New chat
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -297,6 +459,8 @@ const ChatBot = () => {
                   </div>
                 </div>
               ))}
+
+              {/* Loading Dots */}
               {isLoading && messages[messages.length - 1]?.role === 'user' && (
                 <div className="flex justify-start">
                   <div className="mr-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground">
@@ -309,9 +473,50 @@ const ChatBot = () => {
                   </div>
                 </div>
               )}
+
+              {/* Human Handoff Panel */}
+              {showHandoff && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-xl border border-primary/30 bg-primary/5 p-3"
+                >
+                  <p className="text-xs font-semibold text-foreground mb-2">
+                    🙋 Want to speak with our team?
+                  </p>
+                  <div className="flex gap-2">
+                    <a
+                      href={handoffUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 py-1.5 text-[11px] font-semibold hover:bg-[#25D366]/20 transition-colors"
+                    >
+                      <MessageCircle size={12} /> WhatsApp
+                    </a>
+                    <a
+                      href={TG_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#0088CC]/10 text-[#0088CC] border border-[#0088CC]/30 py-1.5 text-[11px] font-semibold hover:bg-[#0088CC]/20 transition-colors"
+                    >
+                      📱 Telegram Bot
+                    </a>
+                  </div>
+                  <p className="mt-1.5 text-[10px] text-muted-foreground">
+                    Your recent messages and order details are included automatically.
+                  </p>
+                  <button
+                    onClick={() => setShowHandoff(false)}
+                    className="mt-1.5 w-full text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Continue with AI
+                  </button>
+
+                </motion.div>
+              )}
             </div>
 
-            {/* Quick replies (first turn only) */}
+            {/* Quick Replies (first turn only) */}
             {messages.length <= 1 && !isLoading && (
               <div className="px-3 pb-2 flex flex-wrap gap-1.5">
                 {QUICK_PROMPTS.map((q) => (
@@ -334,11 +539,12 @@ const ChatBot = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
-                  placeholder="Ask about services, orders, support…"
+                  placeholder="Ask about services, pricing, support…"
                   disabled={isLoading}
                   aria-label="Type your message"
                   className="flex-1 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
                 />
+                {/* Honeypot */}
                 <input
                   type="text"
                   value={honeypot}
@@ -357,19 +563,33 @@ const ChatBot = () => {
                   {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                 </button>
               </div>
-              <div className="mt-1.5 flex items-center justify-between px-1">
-                <p className="text-[10px] text-muted-foreground">
-                  Powered by AI · {Math.max(0, MAX_QUESTIONS - questionCount)} questions left
-                </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5 px-1">
+                <button
+                  onClick={createTicketFromChat}
+                  disabled={creatingTicket}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2 py-1 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground disabled:opacity-50"
+                >
+                  {creatingTicket ? <Loader2 size={10} className="animate-spin" /> : <LifeBuoy size={10} />} Create support ticket
+                </button>
+                <button
+                  onClick={exportChat}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2 py-1 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                >
+                  <Download size={10} /> Export chat
+                </button>
                 <a
-                  href={WA_URL}
+                  href={handoffUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#25D366] hover:underline"
+                  className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-[#25D366] hover:underline"
                 >
                   <MessageCircle size={10} /> Human <ExternalLink size={8} />
                 </a>
               </div>
+              <p className="px-1 pt-1 text-[10px] text-muted-foreground">
+                Powered by AI · {Math.max(0, MAX_QUESTIONS - questionCount)} questions left
+              </p>
+
             </div>
           </motion.div>
         )}

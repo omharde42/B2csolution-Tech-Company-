@@ -1,94 +1,73 @@
 import { motion } from 'framer-motion';
-import { Newspaper, TrendingUp, Calendar, Sparkles } from 'lucide-react';
+import { Newspaper, Calendar, ArrowRight, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useNews } from '@/hooks/useNews';
 
-const news = [
-  {
-    date: 'April 2026',
-    badge: '🔥 Highlight',
-    title: 'B2CDesigner Platform Launching Soon!',
-    excerpt: 'B2C Solution is launching B2CDesigner — a creative design platform for premium Canva templates and ready-to-sell digital products on Shopify & Printify. A dedicated website is coming soon.',
-    highlight: true,
-  },
-  {
-    date: 'April 2026',
-    badge: 'New',
-    title: 'AI-Powered Development Services',
-    excerpt: 'We now offer AI tool development including chatbots, recommendation engines, and intelligent automation for businesses of all sizes.',
-    highlight: false,
-  },
-  {
-    date: 'March 2026',
-    badge: 'Update',
-    title: 'Expanded Ecommerce Solutions',
-    excerpt: 'Full-stack ecommerce development with Shopify, custom platforms, payment gateways, and inventory management systems.',
-    highlight: false,
-  },
-];
+const NewsSection = () => {
+  const { items, loading } = useNews();
 
-const NewsSection = () => (
-  <section className="py-16 bg-secondary/30">
-    <div className="container mx-auto px-4">
-      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <Newspaper size={24} />
-        </div>
-        <h2 className="font-display text-3xl font-bold mb-3">Latest <span className="text-gradient-brand">News</span></h2>
-        <p className="text-muted-foreground">Stay updated with B2C Solution</p>
-      </motion.div>
+  return (
+    <section className="py-16 bg-secondary/30">
+      <div className="container mx-auto px-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Newspaper size={24} />
+          </div>
+          <h2 className="font-display text-3xl font-bold mb-3">Latest <span className="text-gradient-brand">News</span></h2>
+          <p className="text-muted-foreground">Stay updated with B2C Solution</p>
+        </motion.div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {news.map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className={`rounded-xl border p-6 transition-all ${
-              item.highlight
-                ? 'border-accent/50 bg-accent/5 shadow-[0_0_30px_hsl(0,78%,55%,0.1)] md:col-span-3 md:flex md:items-center md:gap-8'
-                : 'border-border bg-card hover:border-primary/30'
-            }`}
-          >
-            {item.highlight && (
-              <div className="shrink-0 mb-4 md:mb-0">
-                <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-                  <Sparkles size={36} />
+        {loading ? (
+          <div className="flex justify-center py-10"><Loader2 className="animate-spin text-muted-foreground" size={26} /></div>
+        ) : items.length === 0 ? (
+          <p className="text-center text-sm text-muted-foreground">No updates published yet — check back soon.</p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+            {items.map((item, i) => (
+              <motion.article
+                key={item.slug}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
+              >
+                {item.coverImage && (
+                  <img
+                    src={item.coverImage}
+                    alt={item.title}
+                    loading="lazy"
+                    className="h-40 w-full object-cover"
+                  />
+                )}
+                <div className="flex flex-1 flex-col p-6">
+                <div className="flex items-center gap-2 mb-3">
+
+                  <span className="rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                    {item.badge}
+                  </span>
+                  <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <Calendar size={10} /> {item.date}
+                  </span>
                 </div>
-              </div>
-            )}
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3">
-                <span className={`rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                  item.highlight
-                    ? 'bg-accent/20 text-accent border border-accent/30'
-                    : 'bg-primary/10 text-primary border border-primary/20'
-                }`}>
-                  {item.badge}
-                </span>
-                <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                  <Calendar size={10} /> {item.date}
-                </span>
-              </div>
-              <h3 className={`font-display font-bold mb-2 ${item.highlight ? 'text-xl md:text-2xl' : 'text-sm'}`}>
-                {item.title}
-              </h3>
-              <p className={`text-muted-foreground leading-relaxed ${item.highlight ? 'text-sm' : 'text-xs'}`}>
-                {item.excerpt}
-              </p>
-            </div>
-            {item.highlight && (
-              <div className="mt-4 md:mt-0 shrink-0">
-                <div className="flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 font-display text-xs font-bold text-accent-foreground glow-accent">
-                  <TrendingUp size={14} /> Launching Soon
+                <h3 className="font-display text-base font-bold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">{item.excerpt}</p>
+                <Link
+                  to={`/news/${item.slug}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-display font-bold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md w-fit"
+                  aria-label={`Read full update: ${item.title}`}
+                >
+                  Read full update <ArrowRight size={13} aria-hidden="true" />
+                </Link>
                 </div>
-              </div>
-            )}
-          </motion.div>
-        ))}
+              </motion.article>
+
+            ))}
+          </div>
+        )}
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default NewsSection;

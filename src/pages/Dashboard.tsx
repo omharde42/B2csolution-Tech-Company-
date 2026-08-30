@@ -2,6 +2,9 @@ import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Package, Clock, CheckCircle, RefreshCw, Loader2 } from 'lucide-react';
+import SupportTickets from '@/components/dashboard/SupportTickets';
+import ChatHistoryExport from '@/components/dashboard/ChatHistoryExport';
+
 
 const statusIcons: Record<string, any> = {
   'pending': Clock,
@@ -82,7 +85,13 @@ const Dashboard = () => {
           })}
         </div>
       )}
+
+      <div className="mt-12 space-y-10">
+        <SupportTickets />
+        <ChatHistoryExport />
+      </div>
     </div>
+
   );
 };
 
