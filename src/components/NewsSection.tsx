@@ -30,9 +30,19 @@ const NewsSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="flex flex-col rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
+                className="flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
               >
+                {item.coverImage && (
+                  <img
+                    src={item.coverImage}
+                    alt={item.title}
+                    loading="lazy"
+                    className="h-40 w-full object-cover"
+                  />
+                )}
+                <div className="flex flex-1 flex-col p-6">
                 <div className="flex items-center gap-2 mb-3">
+
                   <span className="rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
                     {item.badge}
                   </span>
