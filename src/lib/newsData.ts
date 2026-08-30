@@ -5,6 +5,7 @@ export interface NewsItem {
   title: string;
   excerpt: string;
   content: string[];
+  coverImage?: string;
 }
 
 export interface NewsPostRow {
@@ -15,6 +16,7 @@ export interface NewsPostRow {
   date_label: string;
   excerpt: string;
   content: string;
+  cover_image_url: string | null;
   published: boolean;
   sort_order: number;
   created_at: string;
@@ -27,6 +29,7 @@ export const rowToNewsItem = (row: NewsPostRow): NewsItem => ({
   badge: row.badge,
   title: row.title,
   excerpt: row.excerpt,
+  coverImage: row.cover_image_url || undefined,
   content: (row.content || '')
     .split(/\n{2,}/)
     .map((p) => p.trim())
