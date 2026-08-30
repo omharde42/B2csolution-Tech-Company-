@@ -27,6 +27,19 @@ const NewsDetailPage = () => {
         title={`${item.title} — B2C Solution News`}
         description={item.excerpt}
         path={`/news/${item.slug}`}
+        image={item.coverImage}
+        type="article"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'NewsArticle',
+          headline: item.title,
+          description: item.excerpt,
+          datePublished: item.date,
+          ...(item.coverImage ? { image: [item.coverImage] } : {}),
+          author: { '@type': 'Organization', name: 'B2C Solution' },
+          publisher: { '@type': 'Organization', name: 'B2C Solution' },
+          mainEntityOfPage: `https://b2csolutionseller.lovable.app/news/${item.slug}`,
+        }}
       />
       <div className="container mx-auto px-4 max-w-3xl">
         <Link
@@ -39,9 +52,14 @@ const NewsDetailPage = () => {
         <motion.article
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 rounded-2xl border border-border bg-card p-6 sm:p-10"
+          className="mt-6 overflow-hidden rounded-2xl border border-border bg-card"
         >
+          {item.coverImage && (
+            <img src={item.coverImage} alt={item.title} className="h-52 sm:h-72 w-full object-cover" />
+          )}
+          <div className="p-6 sm:p-10">
           <div className="flex items-center gap-3 mb-5">
+
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Newspaper size={20} />
             </div>
@@ -81,7 +99,9 @@ const NewsDetailPage = () => {
               <MessageCircle size={16} /> Chat on WhatsApp
             </a>
           </div>
+          </div>
         </motion.article>
+
 
         <div className="mt-8 text-center">
           <Link

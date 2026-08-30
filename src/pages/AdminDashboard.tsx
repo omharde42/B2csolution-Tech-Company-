@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Search, X, Bot, BarChart3 } from 'lucide-react';
+import { Loader2, Search, X, Bot, BarChart3, Newspaper } from 'lucide-react';
 import AdminStatCards from '@/components/admin/AdminStatCards';
 import AdminCharts from '@/components/admin/AdminCharts';
 import AdminInquiries from '@/components/admin/AdminInquiries';
@@ -10,9 +10,10 @@ import AdminOrders from '@/components/admin/AdminOrders';
 import AdminDateFilter, { AdminDateRange, computeRange } from '@/components/admin/AdminDateFilter';
 import AdminChatbotAnalytics from '@/components/admin/AdminChatbotAnalytics';
 import AdminAuditLog from '@/components/admin/AdminAuditLog';
+import AdminNews from '@/components/admin/AdminNews';
 
 // ─── Tab Types ────────────────────────────────────────────────────────────────
-type ActiveTab = 'website' | 'chatbot';
+type ActiveTab = 'website' | 'chatbot' | 'news';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -154,6 +155,17 @@ const AdminDashboard = () => {
           <Bot size={15} />
           Chatbot
         </button>
+        <button
+          onClick={() => setActiveTab('news')}
+          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+            activeTab === 'news'
+              ? 'bg-primary text-primary-foreground shadow-md'
+              : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+          }`}
+        >
+          <Newspaper size={15} />
+          News
+        </button>
 
       </div>
 
@@ -262,6 +274,16 @@ const AdminDashboard = () => {
             <AdminAuditLog />
           </section>
         </>
+      )}
+
+      {activeTab === 'news' && (
+        <section>
+          <div className="mb-4 sm:mb-6">
+            <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">News & Updates</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Create, edit, order and publish updates without touching code</p>
+          </div>
+          <AdminNews />
+        </section>
       )}
 
     </div>

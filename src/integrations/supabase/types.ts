@@ -191,6 +191,7 @@ export type Database = {
         Row: {
           badge: string
           content: string
+          cover_image_url: string | null
           created_at: string
           created_by: string | null
           date_label: string
@@ -205,6 +206,7 @@ export type Database = {
         Insert: {
           badge?: string
           content?: string
+          cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
           date_label?: string
@@ -219,6 +221,7 @@ export type Database = {
         Update: {
           badge?: string
           content?: string
+          cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
           date_label?: string

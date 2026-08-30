@@ -12,6 +12,7 @@ const emptyDraft = () => ({
   date_label: '',
   excerpt: '',
   content: '',
+  cover_image_url: '',
   published: false,
   sort_order: 0,
 });
@@ -59,6 +60,7 @@ const AdminNews = () => {
       date_label: p.date_label,
       excerpt: p.excerpt,
       content: p.content,
+      cover_image_url: p.cover_image_url || '',
       published: p.published,
       sort_order: p.sort_order,
     });
@@ -78,6 +80,7 @@ const AdminNews = () => {
       date_label: draft.date_label.trim(),
       excerpt: draft.excerpt.trim(),
       content: draft.content,
+      cover_image_url: draft.cover_image_url.trim() || null,
       published: publish ?? draft.published,
       sort_order: Number(draft.sort_order) || 0,
     };
@@ -147,6 +150,13 @@ const AdminNews = () => {
             <input className={field} placeholder="Badge (New / Update)" value={draft.badge} onChange={(e) => setDraft({ ...draft, badge: e.target.value })} />
             <input className={field} placeholder="Date label (April 2026)" value={draft.date_label} onChange={(e) => setDraft({ ...draft, date_label: e.target.value })} />
           </div>
+
+          <input className={field} placeholder="Cover image URL (optional)" value={draft.cover_image_url}
+            onChange={(e) => setDraft({ ...draft, cover_image_url: e.target.value })} />
+
+          {draft.cover_image_url.trim() && (
+            <img src={draft.cover_image_url} alt="Cover preview" className="h-32 w-full rounded-lg object-cover border border-border" />
+          )}
 
           <textarea className={field} rows={2} placeholder="Short excerpt shown on the news card"
             value={draft.excerpt} onChange={(e) => setDraft({ ...draft, excerpt: e.target.value })} />
