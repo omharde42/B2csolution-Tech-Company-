@@ -99,7 +99,9 @@ const NewsDetailPage = () => {
               <MessageCircle size={16} /> Chat on WhatsApp
             </a>
           </div>
+          </div>
         </motion.article>
+
 
         <div className="mt-8 text-center">
           <Link
