@@ -21,7 +21,7 @@ interface Service {
 const services: Service[] = [
   // Digital Services
   { id: 'web-dev', name: 'Web Development', price: 4999, icon: Globe, desc: 'Custom responsive websites built with modern tech stacks.', category: 'Digital' },
-  { id: 'ai-website', name: 'AI Website Builder', price: 2540, icon: Bot, desc: 'AI-powered website creation starting from ₹2540.', category: 'Digital' },
+  { id: 'ai-website', name: 'AI Website Builder', price: 5500, icon: Bot, desc: 'AI-powered website creation starting from ₹5500.', category: 'Digital' },
   // Document Services
   { id: 'typewriting', name: 'Typewriting', price: 300, icon: FileText, desc: 'Professional typewriting services.', category: 'Documents', tiers: [{ label: '10 pages', price: 300 }, { label: '20 pages', price: 600 }] },
   { id: 'ppt-making', name: 'PPT Making', price: 450, icon: Presentation, desc: 'Professional presentations starting ₹450 for 10 slides.', category: 'Documents', tiers: [{ label: '10 slides', price: 450 }, { label: '20 slides', price: 800 }] },

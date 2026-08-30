@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Github, ExternalLink, User } from 'lucide-react';
 
 const GITHUB = 'https://github.com/omharde42';
+const GITHUB_REPOS = 'https://github.com/omharde42?tab=repositories';
 
 const projects = [
   {
@@ -79,7 +80,7 @@ const ProjectsSection = () => (
 
             <div className="flex flex-col sm:flex-row gap-2 mt-auto">
               <a
-                href={p.repo}
+                href={GITHUB_REPOS}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open ${p.title} repository on GitHub in a new tab`}
@@ -103,7 +104,7 @@ const ProjectsSection = () => (
 
       <div className="mt-10 text-center">
         <a
-          href={GITHUB}
+          href={GITHUB_REPOS}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="See all projects on GitHub in a new tab"
