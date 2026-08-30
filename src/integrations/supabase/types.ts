@@ -289,21 +289,27 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          dob: string | null
           email: string
           id: string
           name: string
+          phone: string
         }
         Insert: {
           created_at?: string
+          dob?: string | null
           email?: string
           id: string
           name?: string
+          phone?: string
         }
         Update: {
           created_at?: string
+          dob?: string | null
           email?: string
           id?: string
           name?: string
+          phone?: string
         }
         Relationships: []
       }
