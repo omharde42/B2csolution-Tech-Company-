@@ -1,15 +1,25 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Newspaper, MessageCircle } from 'lucide-react';
-import { newsItems } from '@/lib/newsData';
+import { ArrowLeft, Calendar, Newspaper, MessageCircle, Loader2 } from 'lucide-react';
+import { useNews } from '@/hooks/useNews';
 import SEO from '@/components/SEO';
 import NotFound from './NotFound';
 
 const NewsDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const item = newsItems.find((n) => n.slug === slug);
+  const { items, loading } = useNews();
+  const item = items.find((n) => n.slug === slug);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-32">
+        <Loader2 className="animate-spin text-muted-foreground" size={32} />
+      </div>
+    );
+  }
 
   if (!item) return <NotFound />;
+
 
   return (
     <div className="py-12 sm:py-16">
