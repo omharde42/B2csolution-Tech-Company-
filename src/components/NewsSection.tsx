@@ -59,7 +59,9 @@ const NewsSection = () => {
                 >
                   Read full update <ArrowRight size={13} aria-hidden="true" />
                 </Link>
+                </div>
               </motion.article>
+
             ))}
           </div>
         )}
