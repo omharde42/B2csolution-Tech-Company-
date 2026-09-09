@@ -16,7 +16,7 @@ We focus on creating practical, scalable, and user-friendly technology that help
 | Platform | Link |
 |---|---|
 | 🌍 **Official Website** | [B2C Solution](https://b2csolutionseller.lovable.app/) |
-| 💻 **GitHub** | [B2CSolution on GitHub](https://github.com/omharde42) |
+| 💻 **GitHub** | [B2CSolution on GitHub](https://github.com/B2CSOLUTION-TECH-COMPANY) |
 | 👨‍💻 **Founder — Om Harde** | [LinkedIn](https://in.linkedin.com/in/omharde42211108) |
 
 ---
