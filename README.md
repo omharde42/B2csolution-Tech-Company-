@@ -1,4 +1,7 @@
-# 🚀 B2CSolution
+<p align="center">
+     <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=Header"/>
+</p>
+🚀 B2CSolution Company 
 
 ### Digital Solutions for Modern Businesses
 
@@ -194,4 +197,8 @@ B2CSolution projects are developed for practical, educational, experimental, and
 
 **Build. Automate. Innovate.**
 
-© B2CSolution
+© B2CSolution Company 
+
+<p align="center">
+     <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=Footer"/>
+</p>
