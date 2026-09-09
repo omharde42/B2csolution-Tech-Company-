@@ -200,5 +200,5 @@ B2CSolution projects are developed for practical, educational, experimental, and
 © B2CSolution Company 
 
 <p align="center">
-     <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=Footer"/>
+     <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer"/>
 </p>
